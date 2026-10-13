@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "title": "Ingreso automático de reservas a Administración",
+    "service": "gestion-back",
+    "role": "Administración",
+    "status": "Propuesta",
+    "version": "0.1",
+    "date": "2026-10-13",
+    "author": "Equipo de producto"
+  },
+  "context": {
+    "summary": "Hoy las reservas confirmadas requieren verificación manual de comprobantes antes de llegar a Administración. Con esta feature, una vez que la pasarela de pago confirma el dinero, la reserva se activa sola y la operación ingresa automáticamente al módulo de Administración, pendiente de generación y firma del boleto.",
+    "objective": "Eliminar la revisión manual de comprobantes y que Administración reciba las operaciones listas para trabajar, con el importe y la moneda ya visibles."
+  },
+  "scope": {
+    "in": [
+      "Activación automática de la reserva al confirmarse el pago en la pasarela",
+      "Ingreso automático de la operación al módulo de Administración",
+      "Vista de reserva con importe pagado, moneda, comprador, vendedor, asesor y lote",
+      "Estado inicial de reserva: Pendiente de firma",
+      "Búsqueda por código de publicación, DNI del comprador, nombre y asesor"
+    ],
+    "out": [
+      "Creación manual de reservas desde Administración (se elimina el botón Nueva reserva)",
+      "Revisión o carga manual de comprobantes de pago",
+      "Generación del boleto (va en una feature posterior)",
+      "Gestión de la escritura, que permanece fuera del sistema"
+    ],
+    "pending": [
+      "Porcentaje definitivo de la reserva (referencia: 10% de la operación)",
+      "Plazo de vencimiento de la reserva y si es editable",
+      "Naturaleza del importe: reembolsable o comisión de plataforma"
+    ]
+  },
+  "flow": {
+    "steps": [
+      {
+        "title": "El asesor genera la reserva",
+        "detail": "Selecciona el terreno o lote y el sistema calcula el monto de la reserva automáticamente."
+      },
+      {
+        "title": "El comprador paga",
+        "detail": "Recibe los datos de la reserva y el enlace de pago, y abona por Mercado Pago o la pasarela correspondiente."
+      },
+      {
+        "title": "La pasarela confirma el pago",
+        "detail": "La confirmación del ingreso del dinero proviene de la pasarela; no se verifica ningún comprobante a mano."
+      },
+      {
+        "title": "La reserva se activa",
+        "detail": "Para el asesor la reserva pasa a estar activa y el lote queda reservado."
+      },
+      {
+        "title": "Administración recibe la operación",
+        "detail": "La operación aparece con importe, moneda, datos de las partes y el estado Pendiente de firma."
+      }
+    ]
+  },
+  "stories": [
+    {
+      "id": "ADM-1",
+      "as": "usuario de Administración",
+      "want": "recibir automáticamente las reservas confirmadas por la pasarela",
+      "so": "no tengo que revisar comprobantes ni cargar reservas a mano"
+    },
+    {
+      "id": "ADM-2",
+      "as": "usuario de Administración",
+      "want": "ver el importe pagado, la moneda y los datos de comprador, vendedor, asesor y lote en la reserva",
+      "so": "tengo lo necesario para generar el boleto sin buscar información en otros sistemas"
+    },
+    {
+      "id": "ADM-3",
+      "as": "usuario de Administración",
+      "want": "buscar reservas por código de publicación, DNI, nombre o asesor",
+      "so": "localizo cualquier operación en segundos"
+    }
+  ],
+  "techImpact": {
+    "services": ["gestion-back"],
+    "endpoints": [
+      { "method": "POST", "path": "/webhooks/mercadopago" },
+      { "method": "GET", "path": "/reservas" },
+      { "method": "GET", "path": "/reservas/:id" }
+    ],
+    "tables": ["reservas", "pagos", "operaciones"]
+  },
+  "notes": [
+    "Los pagos simultáneos sobre el mismo lote se resuelven a favor de la primera confirmación recibida.",
+    "El estado Inactiva de una reserva exige registrar siempre un motivo."
+  ]
+}
