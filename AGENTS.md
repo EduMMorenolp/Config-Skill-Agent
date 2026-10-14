@@ -91,7 +91,7 @@ Si no hay fila exacta, buscá por los triggers de la description. Categorías:
 
 | Situación (disparador) | Skill a cargar |
 |---|---|
-| "documento de presentación", "presentar feature/implementación", "documento para el rol X", "briefing de feature" | `documentacion` |
+| "documento de presentación", "presentar feature/implementación", "documento para el rol X", "briefing de feature", "uno con detalle técnico y otro sin jerga", "documento con fecha YYYYMMDD" | `documentacion` |
 
 ### Al cerrar el cambio
 

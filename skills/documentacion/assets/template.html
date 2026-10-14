@@ -12,8 +12,9 @@
   --ink: #1c2733;
   --ink-soft: #55627a;
   --line: #dfe4ec;
-  --brand: #1f3a5f;
-  --brand-soft: #e8eef6;
+  --brand-base: {{BRAND}};
+  --brand: var(--brand-base);
+  --brand-soft: color-mix(in srgb, var(--brand-base) 10%, #fff);
   --ok: #1e7a46;
   --ok-soft: #e4f3ea;
   --warn: #9a6206;
@@ -28,8 +29,8 @@
   --ink: #e7ecf4;
   --ink-soft: #9aa7bd;
   --line: #2a3546;
-  --brand: #7fa8d8;
-  --brand-soft: #1d2b3d;
+  --brand: color-mix(in srgb, var(--brand-base) 40%, #a9c4e4);
+  --brand-soft: color-mix(in srgb, var(--brand-base) 22%, #10151c);
   --ok: #58c48b;
   --ok-soft: #14301f;
   --warn: #e0b45a;
@@ -135,7 +136,7 @@ footer.doc {
 @media print {
   :root, [data-theme="dark"] {
     --bg: #fff; --surface: #fff; --surface-2: #f6f7f9; --ink: #111; --ink-soft: #555;
-    --line: #ccc; --brand: #1f3a5f; --brand-soft: #e8eef6;
+    --line: #ccc; --brand: var(--brand-base); --brand-soft: color-mix(in srgb, var(--brand-base) 10%, #fff);
     --ok-soft: #e4f3ea; --warn-soft: #faf0dc; --stop-soft: #f8e6e5;
   }
   @page { size: A4; margin: 16mm; }

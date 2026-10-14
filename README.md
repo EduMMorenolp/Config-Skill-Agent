@@ -82,7 +82,7 @@ Documentos ejecutivos: se aplican cuando hay que presentar o documentar una feat
 
 | Skill | Dispara con | Qué resuelve |
 |---|---|---|
-| [`documentacion`](skills/documentacion/SKILL.md) | "documento de presentación", "presentar feature", "presentar implementación", "documento para el rol administrativo", "briefing de feature" | HTML ejecutivo autocontenido (portada, contexto, alcance, fuera de alcance, flujo, historias, impacto técnico) desde un JSON tipado validado por CLI propia (`bin/presentador.mjs`), tema claro/oscuro, imprimible a A4 |
+| [`documentacion`](skills/documentacion/SKILL.md) | "documento de presentación", "presentar feature", "presentar implementación", "documento para el rol administrativo", "briefing de feature", "uno técnico y otro sin jerga" | DOS HTML ejecutivos autocontenidos desde un mismo JSON tipado validado por CLI propia (`bin/presentador.mjs`): técnico (`YYYYMMDD-<slug>.html` con portada, contexto, alcance, flujo, historias, plan con horas e impacto técnico) + simple (`YYYYMMDD-<slug>-simple.html` en lenguaje llano con pasos, horas por equipo y nota aclaratoria), tema claro/oscuro, imprimibles a A4 |
 
 ### agents/
 
@@ -117,8 +117,9 @@ desde VS Code (`.vscode/tasks.json`).
 `archify` — cuando pidan **ver** el sistema: diagrama de arquitectura, flujo, secuencia,
 dataflow o estados a partir del código o de una descripción (skill externa, MIT).
 
-**Documentación:** `documentacion` — cuando haya que **presentar** una feature o
-implementación de un servicio a un rol: genera el HTML ejecutivo con el alcance acordado;
+**Documentación:** `documentacion` - cuando haya que **presentar** una feature o
+implementación de un servicio a un rol: genera el par de HTML ejecutivos (técnico + simple en
+lenguaje llano, ambos con prefijo `YYYYMMDD-`) con el alcance acordado;
 ese alcance es lo que después se estima (`generador-estimaciones-global`) y se implementa.
 
 **QA (`qa-test/`):** se aplican en los momentos de control, no en el arranque —

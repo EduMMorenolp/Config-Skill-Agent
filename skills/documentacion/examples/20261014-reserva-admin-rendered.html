@@ -12,8 +12,9 @@
   --ink: #1c2733;
   --ink-soft: #55627a;
   --line: #dfe4ec;
-  --brand: #1f3a5f;
-  --brand-soft: #e8eef6;
+  --brand-base: #006032;
+  --brand: var(--brand-base);
+  --brand-soft: color-mix(in srgb, var(--brand-base) 10%, #fff);
   --ok: #1e7a46;
   --ok-soft: #e4f3ea;
   --warn: #9a6206;
@@ -28,8 +29,8 @@
   --ink: #e7ecf4;
   --ink-soft: #9aa7bd;
   --line: #2a3546;
-  --brand: #7fa8d8;
-  --brand-soft: #1d2b3d;
+  --brand: color-mix(in srgb, var(--brand-base) 40%, #a9c4e4);
+  --brand-soft: color-mix(in srgb, var(--brand-base) 22%, #10151c);
   --ok: #58c48b;
   --ok-soft: #14301f;
   --warn: #e0b45a;
@@ -135,7 +136,7 @@ footer.doc {
 @media print {
   :root, [data-theme="dark"] {
     --bg: #fff; --surface: #fff; --surface-2: #f6f7f9; --ink: #111; --ink-soft: #555;
-    --line: #ccc; --brand: #1f3a5f; --brand-soft: #e8eef6;
+    --line: #ccc; --brand: var(--brand-base); --brand-soft: color-mix(in srgb, var(--brand-base) 10%, #fff);
     --ok-soft: #e4f3ea; --warn-soft: #faf0dc; --stop-soft: #f8e6e5;
   }
   @page { size: A4; margin: 16mm; }
@@ -157,8 +158,8 @@ footer.doc {
       <span class="badge"><b>Servicio:</b> gestion-back</span>
       <span class="badge"><b>Rol:</b> Administración</span>
       <span class="badge"><b>Estado:</b> Propuesta</span>
-      <span class="badge"><b>Versión:</b> 0.1</span>
-      <span class="badge"><b>Fecha:</b> 2026-10-13</span>
+      <span class="badge"><b>Versión:</b> 0.2</span>
+      <span class="badge"><b>Fecha:</b> 2026-10-14</span>
       <span class="badge"><b>Autor:</b> Equipo de producto</span>
     </div>
   </div>
@@ -171,6 +172,7 @@ footer.doc {
 <li><a href="#alcance">Alcance</a></li>
 <li><a href="#flujo">Flujo paso a paso</a></li>
 <li><a href="#historias">Historias de usuario</a></li>
+<li><a href="#plan">Plan de implementación</a></li>
 <li><a href="#impacto">Impacto técnico</a></li>
 <li><a href="#notas">Notas</a></li>
 </ol>
@@ -232,6 +234,32 @@ footer.doc {
 <p><em>para</em> localizo cualquier operación en segundos.</p>
 </div>
 </section>
+<section class="card" id="plan">
+<h2>Plan de implementación</h2>
+<p class="subhead">Equipo</p>
+<div class="chips"><span class="chip"><b>Backend:</b> Eduardo</span><span class="chip"><b>Frontend:</b> Martín</span><span class="chip"><b>QA:</b> Daniel</span></div>
+<p class="subhead">Paso 1 — Que las reservas ingresen solas con el pago verificado <em>(≈ 1 semana · 20 h)</em></p>
+<table class="data">
+<thead><tr><th>Tarea</th><th>Equipo</th><th class="num">Horas</th></tr></thead>
+<tbody><tr><td>Recibir la confirmación del pago desde la pasarela y activar la reserva</td><td>Backend</td><td class="num">5 h</td></tr><tr><td>Exigir motivo obligatorio al inactivar una reserva</td><td>Backend</td><td class="num">3 h</td></tr><tr><td>Mostrar los estados nuevos en el listado y el detalle de reservas</td><td>Frontend</td><td class="num">4 h</td></tr><tr><td>Quitar el botón de creación manual y ocultar la carga de comprobantes</td><td>Frontend</td><td class="num">3 h</td></tr><tr><td>Probar los cambios de estado de la reserva</td><td>QA</td><td class="num">3 h</td></tr><tr><td>Probar el ingreso automático a Administración</td><td>QA</td><td class="num">2 h</td></tr></tbody>
+</table>
+<p class="subhead">Paso 2 — Buscar y ver la reserva <em>(≈ 3 días · 15 h)</em></p>
+<table class="data">
+<thead><tr><th>Tarea</th><th>Equipo</th><th class="num">Horas</th></tr></thead>
+<tbody><tr><td>Listar y buscar reservas por código, DNI, nombre y asesor</td><td>Backend</td><td class="num">4 h</td></tr><tr><td>Vista de reserva con importe, moneda, comprador, vendedor, asesor y lote</td><td>Frontend</td><td class="num">5 h</td></tr><tr><td>Estados visibles con su color y etiqueta</td><td>Frontend</td><td class="num">3 h</td></tr><tr><td>Verificar los filtros de búsqueda con datos reales</td><td>QA</td><td class="num">3 h</td></tr></tbody>
+</table>
+<p class="subhead">Paso 3 — Unir las partes y probar el flujo completo <em>(≈ 2 días · 9 h)</em></p>
+<table class="data">
+<thead><tr><th>Tarea</th><th>Equipo</th><th class="num">Horas</th></tr></thead>
+<tbody><tr><td>Unir el sistema con las pantallas y corregir detalles de conexión</td><td>Backend</td><td class="num">4 h</td></tr><tr><td>Ajustes finales de conexión en pantallas</td><td>Frontend</td><td class="num">2 h</td></tr><tr><td>Recorrido completo: de la reserva al boleto pendiente de firma</td><td>QA</td><td class="num">3 h</td></tr></tbody>
+</table>
+<p class="subhead">Totales por rol</p>
+<table class="data">
+<thead><tr><th>Rol</th><th>Responsable</th><th class="num">Horas</th></tr></thead>
+<tbody><tr><td>Backend</td><td>Eduardo</td><td class="num">16 h</td></tr><tr><td>Frontend</td><td>Martín</td><td class="num">17 h</td></tr><tr><td>QA</td><td>Daniel</td><td class="num">11 h</td></tr><tr><td><b>TOTAL</b></td><td></td><td class="num"><b>44 h</b></td></tr></tbody>
+</table>
+<p><b>Calendario estimado:</b> unas 2 semanas — desarrollo y pruebas avanzan en paralelo.</p>
+</section>
 <section class="card" id="impacto">
 <h2>Impacto técnico</h2>
 <p class="subhead">Servicios</p>
@@ -243,12 +271,14 @@ footer.doc {
 </table>
 <p class="subhead">Tablas</p>
 <div class="chips"><span class="chip">reservas</span><span class="chip">pagos</span><span class="chip">operaciones</span></div>
+<p class="subhead">Archivos</p>
+<div class="chips"><span class="chip">src/modules/reservas/reserva.controller.js</span><span class="chip">src/modules/reservas/reserva.service.js</span></div>
 </section>
 <section class="card" id="notas">
 <h2>Notas</h2>
 <ul class="notes"><li>Los pagos simultáneos sobre el mismo lote se resuelven a favor de la primera confirmación recibida.</li><li>El estado Inactiva de una reserva exige registrar siempre un motivo.</li></ul>
 </section>
-  <footer class="doc">Generado con la skill <b>documentacion</b> · 2026-10-13 · para imprimir a PDF: Ctrl+P → Guardar como PDF</footer>
+  <footer class="doc">Generado con la skill <b>documentacion</b> · 2026-10-14 · para imprimir a PDF: Ctrl+P → Guardar como PDF</footer>
 </div>
 <script>
 (function () {
