@@ -11,7 +11,8 @@ El borrador se escribe después de entender **para qué** dispara, no antes.
 
 ## Cuándo usarla
 
-- Crear una skill nueva en `skills/backend/`, `skills/frontend/`, `skills/devops/` o `skills/global/`.
+- Crear una skill nueva en una categoría de `skills/` (`global/`, `qa-test/`, o la carpeta
+  del stack que toque: `backend-node/`, `frontend-vite/`, `frontend-next/`).
 - Reescribir o parchear una skill existente.
 - Escribir/afinar la `description` (disparadores) de una skill.
 - Alguien pide "esto repetilo en una skill".

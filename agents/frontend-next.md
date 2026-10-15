@@ -49,6 +49,11 @@ Handlers, caché y streaming. Para proyectos **Vite + React (SPA)** el trabajo v
    lado backend. Si el proyecto resulta ser Vite/SPA, devolvé el trabajo para que se
    delegue en `frontend-vite`.
 
+8. **Rama propia.** Trabajá siempre en la rama feature que te asigne el agente primario
+   (`feat/*` o `fix/*` desde `dev`), nunca sobre `main` ni `dev` directo. Si el working tree
+   llega sucio con cambios que no son tuyos, reportá antes de tocar nada: no los arrastres.
+   Flujo completo en la skill `git-workflow-global`.
+
 ## Verificación antes de declarar terminado
 
 Corré siempre (en este orden) y reportá el resultado real de cada uno:

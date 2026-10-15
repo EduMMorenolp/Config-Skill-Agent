@@ -40,6 +40,12 @@ Si no hay fila exacta, buscá por los triggers de la description. Categorías:
 `frontend-next/` (Next.js App Router), `qa-test/` (control de calidad),
 `documentacion/` (documentos ejecutivos de features), `global/` (transversales de proceso).
 
+### Al arrancar un trabajo (ramas y paralelismo)
+
+| Situación (disparador) | Skill a cargar |
+|---|---|
+| Arrancar trabajo en un repo, working tree sucio, dos agentes o tareas en paralelo, decidir en qué rama va un cambio, antes de mergear o liberar | `git-workflow-global` |
+
 ### Al tocar el backend (Node/Express)
 
 | Situación (disparador) | Skill a cargar |
@@ -179,6 +185,8 @@ Cada eslabón asume los anteriores; seguir el orden.
 - No actuar solo con la description sin cargar la skill completa.
 - No saltarte la `Verificación (obligatoria)` ni el lint + typecheck + tests.
 - No des por terminada una skill o un agente de este repo sin `npm test` en verde.
+- No trabajar sobre `main` ni `dev` directo: todo cambio nace en su rama feature desde
+  `dev`, se valida antes de mergear y lo integra quien valida (`git-workflow-global`).
 - No inventar el flujo cuando hay una skill que lo cubre.
 - No mezclar dominios: las skills `*-backend` no tocan UI; las `*-frontend` no tocan
   servidor; las de `qa-test/` se aplican en los momentos de control (runtime, API, review).

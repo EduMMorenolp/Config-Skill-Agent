@@ -32,6 +32,11 @@ Router) el trabajo va a `frontend-next`.
    BD. Si falta un endpoint o un dato, devolvé el trabajo al agente primario con el
    contrato exacto que necesitás del lado backend.
 
+6. **Rama propia.** Trabajá siempre en la rama feature que te asigne el agente primario
+   (`feat/*` o `fix/*` desde `dev`), nunca sobre `main` ni `dev` directo. Si el working tree
+   llega sucio con cambios que no son tuyos, reportá antes de tocar nada: no los arrastres.
+   Flujo completo en la skill `git-workflow-global`.
+
 ## Verificación antes de declarar terminado
 
 Corré siempre (en este orden) y reportá el resultado real de cada uno:
