@@ -16,8 +16,9 @@ SKILL/
 │   ├── backend/   # skills de backend (9 activas)
 │   ├── frontend/  # skills de frontend (8 activas)
 │   ├── qa-test/   # skills de QA/testing (3 activas)
+│   ├── documentacion/ # skills de documentación ejecutiva (1 activa)
 │   ├── devops/    # reservada
-│   └── global/    # skills globales front+back (7 activas)
+│   └── global/    # skills globales front+back (8 activas)
 └── agents/        # agentes portables: backend-node, database-drizzle, frontend-vite, frontend-next
 ```
 
@@ -56,6 +57,7 @@ Skills transversales: aplican por igual a backend y frontend.
 
 | Skill | Dispara con | Qué resuelve |
 |---|---|---|
+| [`archify`](skills/global/archify/SKILL.md) | "diagrama de arquitectura", "diagrama de flujo", "sequence", "dataflow", "estados", "mermaid", "visualizar el sistema" | Diagrama HTML autocontenido y validado (architecture/workflow/sequence/dataflow/lifecycle) desde una descripción o del código: SVG inline, tema claro/oscuro, export PNG/SVG/WebM. Skill externa (MIT, `tt-a1i/archify`) con su propio `bin/archify.mjs` |
 | [`changelog-global`](skills/global/changelog-global/SKILL.md) | "changelog", "historial de cambios", "agregar entrada", "unreleased", "liberar versión" | 5 categorías, entradas auto-contenidas con `Files`, fecha al final, orden inverso, cierre de versión |
 | [`contrato-api-global`](skills/global/contrato-api-global/SKILL.md) | "contrato de la api", "contract first", "diseñar endpoint", "interface typescript", "cambiar la api" | Contract-first, una estrategia de errores + status, validación solo en bordes, adición > modificación, naming predecible |
 | [`crear-skill-global`](skills/global/crear-skill-global/SKILL.md) | "crear skill", "nueva skill", "editar skill", "SKILL.md", "triggers" | Intención → borrador con estructura fija → description anti-trap → suite de verificación → iteración con uso real |
@@ -74,6 +76,14 @@ Skills de verificación y control de calidad: se aplican en los momentos de cont
 | [`playwright-cli`](skills/qa-test/playwright-cli/SKILL.md) | "abrir en el navegador", "verificar en el browser", "screenshot de la app", "snapshot", "e2e manual" | Navegador en vivo desde la terminal: snapshots con refs, auth persistente, consola/red, loop de verificación runtime |
 | [`postman-builder`](skills/qa-test/postman-builder/SKILL.md) | "crear postman", "coleccion postman", "actualizar postman", "generar json postman" | Colección Postman v2.1 derivada del código: prefix, rutas, bodies de Joi/Zod, test scripts, JSON validado |
 | [`revision-codigo-global`](skills/qa-test/revision-codigo-global/SKILL.md) | "revisar codigo", "code review", "revisar el diff", "revisar PR", "antes de merge" | 5 ejes (corrección/legibilidad/arquitectura/seguridad/performance) con remedio estructural por bandera y tamaño de cambio |
+
+### skills/documentacion/
+
+Documentos ejecutivos: se aplican cuando hay que presentar o documentar una feature antes de implementarla.
+
+| Skill | Dispara con | Qué resuelve |
+|---|---|---|
+| [`documentacion`](skills/documentacion/SKILL.md) | "documento de presentación", "presentar feature", "presentar implementación", "documento para el rol administrativo", "briefing de feature", "uno técnico y otro sin jerga" | DOS HTML ejecutivos autocontenidos desde un mismo JSON tipado validado por CLI propia (`bin/presentador.mjs`): técnico (`YYYYMMDD-<slug>.html` con portada, contexto, alcance, flujo, historias, plan con horas e impacto técnico) + simple (`YYYYMMDD-<slug>-simple.html` en lenguaje llano con pasos, horas por equipo y nota aclaratoria), tema claro/oscuro, imprimibles a A4 |
 
 ### agents/
 
@@ -105,6 +115,13 @@ HTML por rol con las horas propuestas, para ajustar antes de imprimir.
 borrador, verificación, iteración).
 `tasks-vscode-global` — al definir cómo se levantan los servicios dev del proyecto
 desde VS Code (`.vscode/tasks.json`).
+`archify` — cuando pidan **ver** el sistema: diagrama de arquitectura, flujo, secuencia,
+dataflow o estados a partir del código o de una descripción (skill externa, MIT).
+
+**Documentación:** `documentacion` - cuando haya que **presentar** una feature o
+implementación de un servicio a un rol: genera el par de HTML ejecutivos (técnico + simple en
+lenguaje llano, ambos con prefijo `YYYYMMDD-`) con el alcance acordado;
+ese alcance es lo que después se estima (`generador-estimaciones-global`) y se implementa.
 
 **QA (`qa-test/`):** se aplican en los momentos de control, no en el arranque —
 `playwright-cli` para verificar en navegador (runtime), `postman-builder` para colecciones

@@ -35,7 +35,7 @@
 Buscá tu situación en las tablas y cargá la skill por `name` (= nombre de la carpeta).
 Si no hay fila exacta, buscá por los triggers de la description. Categorías:
 `backend/` (servidor), `frontend/` (SPA), `qa-test/` (control de calidad),
-`global/` (transversales de proceso).
+`documentacion/` (documentos ejecutivos de features), `global/` (transversales de proceso).
 
 ### Al tocar el backend
 
@@ -85,6 +85,18 @@ Si no hay fila exacta, buscá por los triggers de la description. Categorías:
 |---|---|
 | Abrir la app en el navegador, navegar, click, screenshot, consola/red | `playwright-cli` |
 | Generar o actualizar la colección Postman desde el código | `postman-builder` |
+
+### Al diagramar o documentar un sistema
+
+| Situación (disparador) | Skill a cargar |
+|---|---|
+| "diagrama de arquitectura", "cómo se conecta", mapear un flujo/llamada/dataflow/estados, convertir Mermaid a un diagrama lindo | `archify` |
+
+### Al presentar o documentar una feature
+
+| Situación (disparador) | Skill a cargar |
+|---|---|
+| "documento de presentación", "presentar feature/implementación", "documento para el rol X", "briefing de feature", "uno con detalle técnico y otro sin jerga", "documento con fecha YYYYMMDD" | `documentacion` |
 
 ### Al cerrar el cambio
 
