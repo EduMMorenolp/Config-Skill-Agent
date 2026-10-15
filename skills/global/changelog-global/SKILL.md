@@ -62,6 +62,6 @@ rg '[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}]' CHANGELOG.md
 
 ## Solapamiento
 
-- `ui-bloques-frontend` — el modal "i" de la app muestra el historial en su módulo de datos
+- `vite-ui-bloques-frontend` — el modal "i" de la app muestra el historial en su módulo de datos
   (`APP_VERSION`/`CHANGELOG`); su contenido se deriva del `CHANGELOG.md` del repo: mantenerlos
   sincronizados al liberar una versión.

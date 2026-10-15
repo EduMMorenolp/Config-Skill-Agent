@@ -14,13 +14,13 @@ Router) el trabajo va a `frontend-next`.
 
 1. **Skills hermanas primero.** Aplicá (si están disponibles en el workspace, leelas;
    si no, aplicá su normativa):
-   - `arquitectura-frontend` — SPA canónica, capas, imports, cliente HTTP por feature.
-   - `config-env-frontend` — `VITE_`, `.env.example`, cero secretos en el bundle.
-   - `auth-frontend` — guards declarativos, refresh/expiración, flujos de sesión.
-   - `data-fetching-frontend` — TanStack Query, un solo data layer, sin waterfalls.
-   - `formularios-frontend` — schema Zod sincronizado con el contrato, errores inline.
-   - `estados-toast-frontend` — loading/empty/error/success + toast accesible.
-   - `ui-bloques-frontend` — paginación en URL, tokens/tema, Intl, modales accesibles.
+   - `vite-arquitectura-frontend` — SPA canónica, capas, imports, cliente HTTP por feature.
+   - `vite-config-env-frontend` — `VITE_`, `.env.example`, cero secretos en el bundle.
+   - `vite-auth-frontend` — guards declarativos, refresh/expiración, flujos de sesión.
+   - `vite-data-fetching-frontend` — TanStack Query, un solo data layer, sin waterfalls.
+   - `vite-formularios-frontend` — schema Zod sincronizado con el contrato, errores inline.
+   - `vite-estados-toast-frontend` — loading/empty/error/success + toast accesible.
+   - `vite-ui-bloques-frontend` — paginación en URL, tokens/tema, Intl, modales accesibles.
 2. **Un solo data layer.** Todo request pasa por el cliente HTTP de la feature y
    TanStack Query; ningún componente hace `fetch` directo ni duplica cache.
 3. **El contrato manda.** Los tipos y schemas del frontend se sincronizan con el

@@ -97,7 +97,7 @@ git diff | rg '^[+-].*(interface|type) '
 
 ## Solapamiento
 
-- `errores-respuestas-backend` — implementa el body de error y el handler central que este contrato exige.
-- `validacion-entrada-backend` — el middleware de Joi/Zod **es** la validación de borde.
-- `arquitectura-backend` — define las capas donde el contrato vive y fluye.
-- `formularios-frontend` / `data-fetching-frontend` — consumen este contrato del lado del SPA.
+- `node-errores-respuestas-backend` — implementa el body de error y el handler central que este contrato exige.
+- `node-validacion-entrada-backend` — el middleware de Joi/Zod **es** la validación de borde.
+- `node-arquitectura-backend` — define las capas donde el contrato vive y fluye.
+- `vite-formularios-frontend` / `vite-data-fetching-frontend` — consumen este contrato del lado del SPA.

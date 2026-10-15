@@ -73,7 +73,7 @@ rg -n '\.skip\(|xit\(|xdescribe\(' src/
 
 ## Solapamiento
 
-- `testing-backend` — esta skill es la **metodología** (cuándo y en qué orden); esa es la
+- `node-testing-backend` — esta skill es la **metodología** (cuándo y en qué orden); esa es la
   **infraestructura** (fixtures, BD aislada, CI, cobertura) de Express.
 - `revision-codigo-global` — toda revisión exige que los fixes lleguen con su test.
 - `playwright-cli` — el frontend verifica en runtime con navegador; los E2E formales van a la suite.

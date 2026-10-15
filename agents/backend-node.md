@@ -13,14 +13,14 @@ errores, logging y tests de API.
 
 1. **Skills hermanas primero.** Aplicá (si están disponibles en el workspace, leelas;
    si no, aplicá su normativa):
-   - `arquitectura-backend` — carpetas, capas y dependencias unidireccionales.
-   - `config-env-backend` — config validada al arranque, `.env.example`, cero secretos.
-   - `autenticacion-jwt-backend` — verifyToken, refresh rotation, hash de passwords.
-   - `base-datos-conexion-backend` — pool único, transacciones, migraciones versionadas.
-   - `validacion-entrada-backend` — schema Zod/Joi en el 100% de rutas con input.
-   - `errores-respuestas-backend` — error handler central + 404 catch-all.
-   - `logging-ops-backend` — un logger por proyecto, niveles correctos, health check.
-   - `testing-backend` — pirámide de tests, BD de test aislada, mocking correcto.
+   - `node-arquitectura-backend` — carpetas, capas y dependencias unidireccionales.
+   - `node-config-env-backend` — config validada al arranque, `.env.example`, cero secretos.
+   - `node-autenticacion-jwt-backend` — verifyToken, refresh rotation, hash de passwords.
+   - `node-base-datos-conexion-backend` — pool único, transacciones, migraciones versionadas.
+   - `node-validacion-entrada-backend` — schema Zod/Joi en el 100% de rutas con input.
+   - `node-errores-respuestas-backend` — error handler central + 404 catch-all.
+   - `node-logging-ops-backend` — un logger por proyecto, niveles correctos, health check.
+   - `node-testing-backend` — pirámide de tests, BD de test aislada, mocking correcto.
 2. **Contract-first.** El contrato de la API (rutas, payloads, códigos de error) se
    define antes que el código. Si el contrato cambia, el changelog del proyecto lo
    registra en el mismo gesto.

@@ -14,15 +14,15 @@ Handlers, caché y streaming. Para proyectos **Vite + React (SPA)** el trabajo v
 
 1. **Skills hermanas primero.** Aplicá las que aplican al App Router (si están
    disponibles en el workspace, leelas; si no, aplicá su normativa):
-   - `accesibilidad-frontend` — teclado, ARIA, foco, contraste, responsive.
-   - `formularios-frontend` — schema Zod, errores inline (los schemas viven en el
+   - `vite-accesibilidad-frontend` — teclado, ARIA, foco, contraste, responsive.
+   - `vite-formularios-frontend` — schema Zod, errores inline (los schemas viven en el
      server y se reutilizan en actions).
-   - `estados-toast-frontend` — loading/empty/error + toast accesible.
-   - `ui-bloques-frontend` — paginación en URL, tokens/tema, Intl, modales.
+   - `vite-estados-toast-frontend` — loading/empty/error + toast accesible.
+   - `vite-ui-bloques-frontend` — paginación en URL, tokens/tema, Intl, modales.
    - `tdd-global`, `changelog-global` — proceso.
-   **No aplican** (son del agente SPA `frontend-vite`): `data-fetching-frontend`
-   (TanStack Query), `config-env-frontend` (`VITE_`), `arquitectura-frontend` y
-   `auth-frontend` (guards de router cliente) — sus patrones no trasladan a App Router.
+   **No aplican** (son del agente SPA `frontend-vite`): `vite-data-fetching-frontend`
+   (TanStack Query), `vite-config-env-frontend` (`VITE_`), `vite-arquitectura-frontend` y
+   `vite-auth-frontend` (guards de router cliente) — sus patrones no trasladan a App Router.
 2. **Server Components por defecto.** `'use client'` **solo** en la hoja mínima que
    necesita estado, eventos o browser APIs; nunca en `page.tsx` completo si un botón
    lo hace innecesario. El server pasa datos serializables a client islands vía props

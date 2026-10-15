@@ -75,4 +75,4 @@ rg -n -i -e 'password\s*=\s*\x22' -e 'api[_-]?key\s*=\s*\x22' src/
 
 - `simplificar-codigo-global` — la review **señala** complejidad; esa skill **ejecuta** el arreglo.
 - `tdd-global` — todo fix que llega a la review trae su test de reproducción.
-- `testing-backend` — los tests que la review debe correr vienen de esa skill.
+- `node-testing-backend` — los tests que la review debe correr vienen de esa skill.

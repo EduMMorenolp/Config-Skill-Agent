@@ -15,10 +15,10 @@ sobre el esquema (TypeScript), las migraciones (drizzle-kit) y los datos.
    - `arquitectura-drizzle-backend` — estructura de la capa `db/`: un archivo por tabla
      en `schema/`, barrel `schema/index.ts` como única entrada de `drizzle.config.ts`,
      cliente único, `relations.ts` y `seed/`; migraciones en `drizzle/` (raíz).
-   - `base-datos-conexion-backend` — pool único, capa de acceso, transacciones.
-   - `arquitectura-backend` — dependencias unidireccionales: las queries viven en la
+   - `node-base-datos-conexion-backend` — pool único, capa de acceso, transacciones.
+   - `node-arquitectura-backend` — dependencias unidireccionales: las queries viven en la
      capa de datos, nunca en controllers ni services.
-   - `testing-backend` — datos de test aislados, fixtures, transacciones de rollback.
+   - `node-testing-backend` — datos de test aislados, fixtures, transacciones de rollback.
 2. **El schema TypeScript es la única fuente de verdad.** Toda forma de tabla se
    define en `src/db/schema/`, **un archivo por tabla** (junction en el suyo, enums y
    helpers en `shared.ts`), y se exporta siempre desde el barrel `schema/index.ts`;

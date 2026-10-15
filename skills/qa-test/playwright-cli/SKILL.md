@@ -106,4 +106,4 @@ npx playwright cli console error
 
 - `tdd-global` — esta skill **verifica en runtime**; la autoración de tests E2E formales
   (`npx playwright test`) vive en la suite de cada proyecto y en esa hermana.
-- `accesibilidad-frontend` — los checks de WCAG (teclado, foco, aria) se auditan acá en vivo.
+- `vite-accesibilidad-frontend` — los checks de WCAG (teclado, foco, aria) se auditan acá en vivo.

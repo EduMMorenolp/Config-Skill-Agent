@@ -84,5 +84,5 @@ no es sí, aún no está simplificado.
 ## Solapamiento
 
 - `revision-codigo-global` — la review señala la complejidad; esta skill ejecuta el arreglo.
-- `testing-backend` — los tests que prueban el "comportamiento idéntico" se arman ahí.
+- `node-testing-backend` — los tests que prueban el "comportamiento idéntico" se arman ahí.
 - `revision-codigo-global` — el ciclo se cierra: review señala → esta skill simplifica → review re-aprueba.

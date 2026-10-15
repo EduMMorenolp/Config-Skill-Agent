@@ -17,10 +17,20 @@ export const EXTERNAL_SKILLS = new Set(["archify"]);
  * el agente no sabría cuál disparar.
  */
 export const ALLOWED_TRIGGER_PAIRS = [
-  ["arquitectura-backend", "arquitectura-frontend"],
-  ["autenticacion-jwt-backend", "auth-frontend"],
-  ["config-env-backend", "config-env-frontend"],
-  ["validacion-entrada-backend", "formularios-frontend"],
+  // backend Node ↔ frontend Vite (mismo concepto en dos lados de la API)
+  ["node-arquitectura-backend", "vite-arquitectura-frontend"],
+  ["node-autenticacion-jwt-backend", "vite-auth-frontend"],
+  ["node-config-env-backend", "vite-config-env-frontend"],
+  ["node-validacion-entrada-backend", "vite-formularios-frontend"],
+  // frontend Vite/SPA ↔ frontend Next App Router (mismo concepto en dos stacks de UI)
+  ["vite-arquitectura-frontend", "next-arquitectura-frontend"],
+  ["vite-config-env-frontend", "next-config-env-frontend"],
+  ["vite-auth-frontend", "next-auth-frontend"],
+  ["vite-data-fetching-frontend", "next-data-fetching-frontend"],
+  ["vite-formularios-frontend", "next-formularios-frontend"],
+  ["vite-estados-toast-frontend", "next-estados-toast-frontend"],
+  ["vite-ui-bloques-frontend", "next-ui-bloques-frontend"],
+  ["vite-accesibilidad-frontend", "next-accesibilidad-frontend"],
 ];
 
 /** Secciones/criterios fijos que toda skill propia debe tener (crear-skill-global). */

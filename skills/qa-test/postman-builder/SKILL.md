@@ -124,6 +124,6 @@ rg -c '"raw"' docs/postman/<Coleccion>.json
 
 ## Solapamiento
 
-- `validacion-entrada-backend` — los schemas que alimentan los bodies salen de ahí.
-- `autenticacion-jwt-backend` — define `verifyToken` y el flujo de `{{token}}`.
-- `errores-respuestas-backend` — la forma de respuesta que asumen los test scripts.
+- `node-validacion-entrada-backend` — los schemas que alimentan los bodies salen de ahí.
+- `node-autenticacion-jwt-backend` — define `verifyToken` y el flujo de `{{token}}`.
+- `node-errores-respuestas-backend` — la forma de respuesta que asumen los test scripts.
