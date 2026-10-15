@@ -12,19 +12,25 @@ sobre el esquema (TypeScript), las migraciones (drizzle-kit) y los datos.
 
 1. **Skills hermanas primero.** Aplicá (si están disponibles en el workspace, leelas;
    si no, aplicá su normativa):
+   - `arquitectura-drizzle-backend` — estructura de la capa `db/`: un archivo por tabla
+     en `schema/`, barrel `schema/index.ts` como única entrada de `drizzle.config.ts`,
+     cliente único, `relations.ts` y `seed/`; migraciones en `drizzle/` (raíz).
    - `base-datos-conexion-backend` — pool único, capa de acceso, transacciones.
    - `arquitectura-backend` — dependencias unidireccionales: las queries viven en la
      capa de datos, nunca en controllers ni services.
    - `testing-backend` — datos de test aislados, fixtures, transacciones de rollback.
 2. **El schema TypeScript es la única fuente de verdad.** Toda forma de tabla se
-   define en `src/db/schema*`; **nunca se altera la BD a mano** ni se edita una
-   migración ya aplicada. Los tipos de fila se infieren (`$inferSelect`/
-   `$inferInsert`); **nunca** se redeclaran interfaces a mano.
+   define en `src/db/schema/`, **un archivo por tabla** (junction en el suyo, enums y
+   helpers en `shared.ts`), y se exporta siempre desde el barrel `schema/index.ts`;
+   **nunca se altera la BD a mano** ni se edita una migración ya aplicada. Los tipos de
+   fila se infieren (`$inferSelect`/`$inferInsert`); **nunca** se redeclaran interfaces
+   a mano.
 3. **Generate-then-migrate.** Flujo: editar schema → `drizzle-kit generate` → commitear
    schema + SQL juntos → `drizzle-kit migrate` (o `migrate()` en deploy). `drizzle-kit
    push` **solo** en prototipado local desechable; jamás contra una BD compartida.
-   `drizzle.config.ts` con `dialect`, `schema` y `out`. Correr `drizzle-kit check` en
-   verificación (detecta colisiones/race conditions entre migraciones).
+   `drizzle.config.ts` con `dialect`, `schema` (apuntando al barrel
+   `src/db/schema/index.ts`) y `out` (`drizzle/` en la raíz). Correr `drizzle-kit check`
+   en verificación (detecta colisiones/race conditions entre migraciones).
 4. **Un solo cliente `db` por proceso.** Se crea con `drizzle(pool, { schema, relations })`;
    se **pasa `db` (o `tx`) como parámetro** a las funciones, no se importa un singleton
    en módulos profundos. Dentro de una transacción se usa **solo `tx`**.

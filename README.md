@@ -13,7 +13,7 @@ SKILL/
 ├── README.md      # este archivo
 ├── CHANGELOG.md   # historial de cambios (se actualiza en cada alta/modificación/baja)
 ├── skills/        # contenedor canónico de skills (lo descubre npx skills)
-│   ├── backend/   # skills de backend (8 activas)
+│   ├── backend/   # skills de backend (9 activas)
 │   ├── frontend/  # skills de frontend (8 activas)
 │   ├── qa-test/   # skills de QA/testing (3 activas)
 │   ├── devops/    # reservada
@@ -28,6 +28,7 @@ SKILL/
 | Skill | Dispara con | Qué resuelve |
 |---|---|---|
 | [`arquitectura-backend`](skills/backend/arquitectura-backend/SKILL.md) | "estructura del proyecto", "dónde va este archivo", "separación de capas" | Árbol canónico, tabla de dependencias por capa, estructura única (dominio vs capa), verificación de imports violados |
+| [`arquitectura-drizzle-backend`](skills/backend/arquitectura-drizzle-backend/SKILL.md) | "estructura de drizzle", "organizar schemas", "un archivo por tabla", "drizzle.config" | Árbol de `src/db/` con Drizzle: 1 tabla = 1 archivo + barrel, cliente único, relations, seeds idempotentes, `drizzle/` en la raíz |
 | [`autenticacion-jwt-backend`](skills/backend/autenticacion-jwt-backend/SKILL.md) | "JWT", "login", "token", "refresh token", "proteger ruta" | Middleware verifyToken, tokens cortos, refresh rotation, almacenamiento seguro, hash de passwords |
 | [`base-datos-conexion-backend`](skills/backend/base-datos-conexion-backend/SKILL.md) | "conexión a la base", "pool", "migraciones", "transacción" | Pool único, capa de acceso a datos, transacciones con release, migraciones versionadas |
 | [`config-env-backend`](skills/backend/config-env-backend/SKILL.md) | "agregar variable de entorno", "JWT_SECRET", ".env.example" | Módulo único de config con validación fail-fast, `.env.example` como fuente de truth, cero secretos |
@@ -91,7 +92,7 @@ Para armar un proyecto desde cero con estas skills, seguir la cadena de dependen
 eslabón asume los anteriores:
 
 **Backend:**
-`arquitectura-backend` → `config-env-backend` → `autenticacion-jwt-backend` → `base-datos-conexion-backend` → `validacion-entrada-backend` → `errores-respuestas-backend` → `logging-ops-backend` → `testing-backend`
+`arquitectura-backend` → `config-env-backend` → `autenticacion-jwt-backend` → `base-datos-conexion-backend` → `arquitectura-drizzle-backend` (si el ORM es Drizzle) → `validacion-entrada-backend` → `errores-respuestas-backend` → `logging-ops-backend` → `testing-backend`
 
 **Frontend:**
 `arquitectura-frontend` → `config-env-frontend` → `auth-frontend` → `data-fetching-frontend` → `formularios-frontend` → `estados-toast-frontend` → `ui-bloques-frontend` → `accesibilidad-frontend`

@@ -25,6 +25,10 @@
    agente primario con su skill directa.
 7. **No reescribas el flujo de memoria.** Si la skill ordena correr un comando, corrélo;
    si pide una plantilla concreta, usá esa plantilla.
+8. **Antes de instalar una dependencia, verificá la versión estable más reciente.**
+   Consultá el registro (`npm view <pkg> version`, `pip index versions <pkg>`, etc.) o la
+   web oficial y usá esa versión; no asumas la que dicen la memoria, un tutorial o un
+   ejemplo. Si necesitás una versión anterior por compatibilidad, dejalo explícito.
 
 ## Mapa de situaciones → skills
 
@@ -41,6 +45,7 @@ Si no hay fila exacta, buscá por los triggers de la description. Categorías:
 | Diseñar un endpoint nuevo o cambiar el contrato de la API | `contrato-api-global` (primero) y después `validacion-entrada-backend` |
 | Login, JWT, refresh, proteger rutas, hash de passwords | `autenticacion-jwt-backend` |
 | Conexión a la base, pool, transacciones, migraciones | `base-datos-conexion-backend` |
+| Estructura de la capa `db/` con Drizzle: schemas, seed, migraciones, "un archivo por tabla" | `arquitectura-drizzle-backend` |
 | Agregar/auditar variables de entorno, `.env.example`, secretos | `config-env-backend` |
 | Error 500/404, responses uniformes, controllers que lanzan | `errores-respuestas-backend` |
 | Logger, niveles, health check, `console.log` en prod, logs en el repo | `logging-ops-backend` |
@@ -106,8 +111,9 @@ Si no hay fila exacta, buscá por los triggers de la description. Categorías:
 Cada eslabón asume los anteriores; seguir el orden.
 
 - **Backend desde cero:** `arquitectura-backend` → `config-env-backend` →
-  `autenticacion-jwt-backend` → `base-datos-conexion-backend` → `validacion-entrada-backend`
-  → `errores-respuestas-backend` → `logging-ops-backend` → `testing-backend`.
+  `autenticacion-jwt-backend` → `base-datos-conexion-backend` → `arquitectura-drizzle-backend`
+  (si el ORM es Drizzle) → `validacion-entrada-backend` → `errores-respuestas-backend`
+  → `logging-ops-backend` → `testing-backend`.
   Al diseñar cada endpoint, sumar `contrato-api-global`.
 - **Frontend desde cero:** `arquitectura-frontend` → `config-env-frontend` → `auth-frontend`
   → `data-fetching-frontend` → `formularios-frontend` → `estados-toast-frontend` →

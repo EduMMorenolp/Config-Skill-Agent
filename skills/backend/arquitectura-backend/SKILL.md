@@ -31,6 +31,9 @@ src/
 └── db/                 # conexión, pool, migraciones
 ```
 
+Con Drizzle ORM, el interior de `db/` (schemas, relations, seeds, salida de drizzle-kit)
+tiene árbol propio: skill `arquitectura-drizzle-backend`.
+
 ### 2. Tabla de dependencias: qué le está permitido importar
 
 | Capa | Contenido | Puede importar | NO puede importar |
@@ -105,3 +108,6 @@ módulo** o a `utils/` compartidos (apuntar a otro módulo = violación, justifi
 - `errores-respuestas-backend` — el error handler central vive en `middleware/` y es el último del
   chain; `config-env-backend` — `config/` es el único lector de env; ambas dependen del layout de acá.
 - `contrato-api-global` — el contrato de la API (interfaces, errores, naming) se diseña sobre estas capas.
+- `arquitectura-drizzle-backend` — define el **interior** de `db/` cuando el ORM es Drizzle
+  (un archivo por tabla, barrel, cliente único, seeds, `drizzle/`); esta skill es la dueña
+  de las capas.

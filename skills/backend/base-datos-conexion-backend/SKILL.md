@@ -123,6 +123,8 @@ rg "new Pool|new Client|createPool" src/ -l   # esperado: 1 archivo
 ## Solapamiento
 
 - `arquitectura-backend` — define que `db/` es una capa y qué puede importar.
+- `arquitectura-drizzle-backend` — cuando el ORM es Drizzle, el árbol interno de `db/`
+  (un schema por tabla, barrel, seeds, `drizzle/` en la raíz) está en esa skill.
 - `config-env-backend` — `DATABASE_URL` y `DB_POOL_MAX` viven en el módulo único de config.
 - `logging-ops-backend` — health check verifica la BD con un query simple.
 - `errores-respuestas-backend` — errores de BD (constraint violation, timeout) los atrapa el handler
