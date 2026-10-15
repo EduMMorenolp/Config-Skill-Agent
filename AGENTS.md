@@ -36,35 +36,39 @@
 
 Buscá tu situación en las tablas y cargá la skill por `name` (= nombre de la carpeta).
 Si no hay fila exacta, buscá por los triggers de la description. Categorías:
-`backend/` (servidor), `frontend/` (SPA), `qa-test/` (control de calidad),
+`backend-node/` (servidor Node/Express), `frontend-vite/` (SPA Vite/React),
+`frontend-next/` (Next.js App Router), `qa-test/` (control de calidad),
 `documentacion/` (documentos ejecutivos de features), `global/` (transversales de proceso).
 
-### Al tocar el backend
+### Al tocar el backend (Node/Express)
 
 | Situación (disparador) | Skill a cargar |
 |---|---|
-| Estructura de carpetas, capas, "dónde va este archivo" en el servidor | `arquitectura-backend` |
-| Diseñar un endpoint nuevo o cambiar el contrato de la API | `contrato-api-global` (primero) y después `validacion-entrada-backend` |
-| Login, JWT, refresh, proteger rutas, hash de passwords | `autenticacion-jwt-backend` |
-| Conexión a la base, pool, transacciones, migraciones | `base-datos-conexion-backend` |
+| Estructura de carpetas, capas, "dónde va este archivo" en el servidor | `node-arquitectura-backend` |
+| Diseñar un endpoint nuevo o cambiar el contrato de la API | `contrato-api-global` (primero) y después `node-validacion-entrada-backend` |
+| Login, JWT, refresh, proteger rutas, hash de passwords | `node-autenticacion-jwt-backend` |
+| Conexión a la base, pool, transacciones, migraciones | `node-base-datos-conexion-backend` |
 | Estructura de la capa `db/` con Drizzle: schemas, seed, migraciones, "un archivo por tabla" | `arquitectura-drizzle-backend` |
-| Agregar/auditar variables de entorno, `.env.example`, secretos | `config-env-backend` |
-| Error 500/404, responses uniformes, controllers que lanzan | `errores-respuestas-backend` |
-| Logger, niveles, health check, `console.log` en prod, logs en el repo | `logging-ops-backend` |
-| Tests de API, fixtures, mocking, BD de test, CI | `testing-backend` |
+| Agregar/auditar variables de entorno, `.env.example`, secretos | `node-config-env-backend` |
+| Error 500/404, responses uniformes, controllers que lanzan | `node-errores-respuestas-backend` |
+| Logger, niveles, health check, `console.log` en prod, logs en el repo | `node-logging-ops-backend` |
+| Tests de API, fixtures, mocking, BD de test, CI | `node-testing-backend` |
 
 ### Al construir la UI (frontend)
 
-| Situación (disparador) | Skill a cargar |
-|---|---|
-| Estructura de la SPA, "dónde va este archivo", dónde vive el estado, prop drilling | `arquitectura-frontend` |
-| Variables `VITE_`, `.env`, secretos en el bundle | `config-env-frontend` |
-| Login, guards de ruta, sesión, refresh/expiración | `auth-frontend` |
-| Traer datos, caché, invalidación, optimistic updates | `data-fetching-frontend` |
-| Formularios, validación Zod, errores inline, fechas | `formularios-frontend` |
-| Loading/empty/error/retry, skeletons, toast | `estados-toast-frontend` |
-| Paginación, tema/tokens, fechas y moneda, modal de info, espaciado/tipografía del design system | `ui-bloques-frontend` |
-| Teclado, ARIA, foco, contraste, responsive | `accesibilidad-frontend` |
+Cada tema tiene **dos skills**: una por stack. Cargar la del stack del proyecto (los dos no
+conviven en la misma app).
+
+| Situación (disparador) | Vite / SPA | Next.js App Router |
+|---|---|---|
+| Estructura, "dónde va este archivo", dónde vive el estado, prop drilling | `vite-arquitectura-frontend` | `next-arquitectura-frontend` |
+| Variables de entorno, `.env`, secretos en el bundle | `vite-config-env-frontend` (`VITE_`) | `next-config-env-frontend` (`NEXT_PUBLIC_`, server-only) |
+| Login, guards de ruta, sesión, refresh/expiración | `vite-auth-frontend` | `next-auth-frontend` |
+| Traer datos, caché, invalidación, optimistic updates | `vite-data-fetching-frontend` | `next-data-fetching-frontend` |
+| Formularios, validación Zod, errores inline, fechas | `vite-formularios-frontend` | `next-formularios-frontend` |
+| Loading/empty/error/retry, skeletons, toast | `vite-estados-toast-frontend` | `next-estados-toast-frontend` |
+| Paginación, tema/tokens, fechas y moneda, modal de info, espaciado/tipografía del design system | `vite-ui-bloques-frontend` | `next-ui-bloques-frontend` |
+| Teclado, ARIA, foco, contraste, responsive | `vite-accesibilidad-frontend` | `next-accesibilidad-frontend` |
 
 ### Al escribir lógica o arreglar un bug
 
@@ -120,24 +124,53 @@ Si no hay fila exacta, buscá por los triggers de la description. Categorías:
 |---|---|
 | Crear o editar una skill de este repo | `crear-skill-global` + secciones Convenciones de abajo |
 
+## Cómo agregar un stack nuevo (backend o frontend)
+
+Cada stack tiene **su carpeta con sus skills completas** (`skills/backend-node/`,
+`skills/frontend-vite/`, `skills/frontend-next/`): no hay skills compartidas entre stacks —
+si dos stacks resuelven el mismo tema, cada uno lleva su versión adaptada. Para sumar uno:
+
+1. **Carpeta:** `skills/<stack>-<lado>/` (p. ej. `backend-go/`, `frontend-astro/`). Nada de
+   carpetas vacías: el test de categorías exige un `SKILL.md` por subcarpeta.
+2. **Nombre:** `<stack>-<tema>-<lado>` (p. ej. `go-config-env-backend`,
+   `astro-arquitectura-frontend`), con `name` = carpeta. El stack va en el **prefijo** porque
+   instaladas con `npx skills` las carpetas de categoría desaparecen: en destino solo queda
+   el nombre como identificación.
+3. **Contenido:** partir de la skill equivalente del stack vecino y adaptar código, árbol y
+   comandos; mantener la estructura fija (`Regla`, `## Cuándo usarla`, `## Checklist`,
+   `## Anti-patrones`, `## Solapamiento` y `Verificación (obligatoria)` con `rg` reales).
+4. **Triggers:** cada trigger tiene **UN** dueño. Lo conceptual compartido ("login", "toast",
+   "a11y") va a las dos skills del mismo tema y el par se registra en
+   `ALLOWED_TRIGGER_PAIRS` (`test/helpers.mjs`); un trigger en tres skills rompe el test:
+   se **mueve**, no se duplica.
+5. **Agente:** `agents/<stack>.md` con `name` = nombre de archivo, skills hermanas citadas
+   por nombre (nunca copiando su contenido) y verificación lint + typecheck + tests del stack.
+6. **Docs en el mismo gesto:** fila en el catálogo `README.md` (árbol + tabla), fila en el
+   mapa de situaciones de `AGENTS.md` y entrada en `CHANGELOG.md`.
+7. **Verificación:** `npm test` en verde y `npx skills add . -l` listando las skills nuevas.
+
 ## Cadenas típicas por flujo
 
 Cada eslabón asume los anteriores; seguir el orden.
 
-- **Backend desde cero:** `arquitectura-backend` → `config-env-backend` →
-  `autenticacion-jwt-backend` → `base-datos-conexion-backend` → `arquitectura-drizzle-backend`
-  (si el ORM es Drizzle) → `validacion-entrada-backend` → `errores-respuestas-backend`
-  → `logging-ops-backend` → `testing-backend`.
+- **Backend desde cero:** `node-arquitectura-backend` → `node-config-env-backend` →
+  `node-autenticacion-jwt-backend` → `node-base-datos-conexion-backend` →
+  `arquitectura-drizzle-backend` (si el ORM es Drizzle) → `node-validacion-entrada-backend`
+  → `node-errores-respuestas-backend` → `node-logging-ops-backend` → `node-testing-backend`.
   Al diseñar cada endpoint, sumar `contrato-api-global`.
-- **Frontend desde cero:** `arquitectura-frontend` → `config-env-frontend` → `auth-frontend`
-  → `data-fetching-frontend` → `formularios-frontend` → `estados-toast-frontend` →
-  `ui-bloques-frontend` → `accesibilidad-frontend`.
+- **Frontend desde cero (elegir el stack y seguir la cadena completa):**
+  - **Vite/SPA:** `vite-arquitectura-frontend` → `vite-config-env-frontend` →
+    `vite-auth-frontend` → `vite-data-fetching-frontend` → `vite-formularios-frontend` →
+    `vite-estados-toast-frontend` → `vite-ui-bloques-frontend` → `vite-accesibilidad-frontend`.
+  - **Next.js App Router:** `next-arquitectura-frontend` → `next-config-env-frontend` →
+    `next-auth-frontend` → `next-data-fetching-frontend` → `next-formularios-frontend` →
+    `next-estados-toast-frontend` → `next-ui-bloques-frontend` → `next-accesibilidad-frontend`.
 - **Ciclo de vida de un cambio:** `contrato-api-global` → `tdd-global` → implementación
   (skills del lado que toque) → `revision-codigo-global` → `changelog-global` →
   `postman-builder` (si hubo endpoints).
-- **UI de punta a punta:** `arquitectura-frontend` → `data-fetching-frontend` →
-  `formularios-frontend` → `estados-toast-frontend` → `ui-bloques-frontend` →
-  `accesibilidad-frontend` → `playwright-cli` (verificar) → `changelog-global`.
+- **UI de punta a punta:** la arquitectura del stack → `data-fetching` → `formularios` →
+  `estados-toast` → `ui-bloques` → `accesibilidad` (con el prefijo `vite-` o `next-` del
+  stack del proyecto) → `playwright-cli` (verificar) → `changelog-global`.
 - **Un bug:** `tdd-global` (reproducir en test) → corregir → `revision-codigo-global` →
   `changelog-global`.
 

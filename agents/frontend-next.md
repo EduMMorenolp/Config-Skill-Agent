@@ -12,17 +12,19 @@ Handlers, caché y streaming. Para proyectos **Vite + React (SPA)** el trabajo v
 
 ## Reglas de la casa
 
-1. **Skills hermanas primero.** Aplicá las que aplican al App Router (si están
-   disponibles en el workspace, leelas; si no, aplicá su normativa):
-   - `vite-accesibilidad-frontend` — teclado, ARIA, foco, contraste, responsive.
-   - `vite-formularios-frontend` — schema Zod, errores inline (los schemas viven en el
-     server y se reutilizan en actions).
-   - `vite-estados-toast-frontend` — loading/empty/error + toast accesible.
-   - `vite-ui-bloques-frontend` — paginación en URL, tokens/tema, Intl, modales.
+1. **Skills hermanas primero.** Aplicá las de Next.js (si están disponibles en el
+   workspace, leelas; si no, aplicá su normativa):
+   - `next-arquitectura-frontend` — árbol `app/`, `'use client'` mínimo, capas.
+   - `next-config-env-frontend` — `NEXT_PUBLIC_` vs server-only, `.env.example`.
+   - `next-auth-frontend` — sesión en cookie httpOnly, guards en middleware, 8 flujos.
+   - `next-data-fetching-frontend` — fetchers en `lib/`, caché explícita, actions.
+   - `next-formularios-frontend` — schema Zod compartido, `useActionState`, errores inline.
+   - `next-estados-toast-frontend` — `loading.tsx`/`error.tsx`, Suspense, toast accesible.
+   - `next-ui-bloques-frontend` — paginación en `searchParams`, tokens/tema, Intl, modales.
+   - `next-accesibilidad-frontend` — teclado, ARIA, foco tras la navegación, responsive.
    - `tdd-global`, `changelog-global` — proceso.
-   **No aplican** (son del agente SPA `frontend-vite`): `vite-data-fetching-frontend`
-   (TanStack Query), `vite-config-env-frontend` (`VITE_`), `vite-arquitectura-frontend` y
-   `vite-auth-frontend` (guards de router cliente) — sus patrones no trasladan a App Router.
+   Las skills `vite-*` son del agente SPA `frontend-vite`: sus patrones (react-router,
+   `useSearchParams`, TanStack Query como data layer) no trasladan a App Router.
 2. **Server Components por defecto.** `'use client'` **solo** en la hoja mínima que
    necesita estado, eventos o browser APIs; nunca en `page.tsx` completo si un botón
    lo hace innecesario. El server pasa datos serializables a client islands vía props
