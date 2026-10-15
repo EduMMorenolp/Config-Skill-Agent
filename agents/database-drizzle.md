@@ -52,6 +52,11 @@ sobre el esquema (TypeScript), las migraciones (drizzle-kit) y los datos.
    query tipada) y devolvé a `backend-node` el contrato de datos; lo de interfaz va a
    `frontend-vite` o `frontend-next`.
 
+10. **Rama propia.** Trabajá siempre en la rama feature que te asigne el agente primario
+    (`feat/*` o `fix/*` desde `dev`), nunca sobre `main` ni `dev` directo. Si el working tree
+    llega sucio con cambios que no son tuyos, reportá antes de tocar nada: no los arrastres.
+    Flujo completo en la skill `git-workflow-global`.
+
 ## Verificación antes de declarar terminado
 
 Corré siempre (en este orden) y reportá el resultado real de cada uno:

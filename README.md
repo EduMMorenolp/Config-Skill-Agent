@@ -22,7 +22,7 @@ SKILL/
 │   ├── qa-test/   # skills de QA/testing (3 activas)
 │   ├── documentacion/ # skills de documentación ejecutiva (1 activa)
 │   ├── devops/    # reservada
-│   └── global/    # skills globales front+back (8 activas)
+│   └── global/    # skills globales front+back (9 activas)
 └── agents/        # agentes portables: backend-node, database-drizzle, frontend-vite, frontend-next
 ```
 
@@ -85,6 +85,7 @@ Skills transversales: aplican por igual a backend y frontend.
 | [`contrato-api-global`](skills/global/contrato-api-global/SKILL.md) | "contrato de la api", "contract first", "diseñar endpoint", "interface typescript", "cambiar la api" | Contract-first, una estrategia de errores + status, validación solo en bordes, adición > modificación, naming predecible |
 | [`crear-skill-global`](skills/global/crear-skill-global/SKILL.md) | "crear skill", "nueva skill", "editar skill", "SKILL.md", "triggers" | Intención → borrador con estructura fija → description anti-trap → suite de verificación → iteración con uso real |
 | [`generador-estimaciones-global`](skills/global/generador-estimaciones-global/SKILL.md) | "crear estimación", "estimar horas", "tiempos de desarrollo", "cuánto tarda", "estimación QA" | Docs HTML por rol con horas prellenadas (propuesta del agente), tabla Tarea × Horas, subtotales, total y semanas; listo para imprimir a PDF |
+| [`git-workflow-global`](skills/global/git-workflow-global/SKILL.md) | "ramas", "rama", "branch", "git", "merge", "dev", "trabajar en paralelo" | Workflow `main` → `dev` → `feat/*`: una rama por cambio, working tree limpio, lint + typecheck + tests antes de `merge --no-ff`; agentes en paralelo sin pisarse |
 | [`simplificar-codigo-global`](skills/global/simplificar-codigo-global/SKILL.md) | "simplificar codigo", "refactor", "limpiar codigo", "reducir complejidad", "funcion larga" | Comportamiento idéntico con tests intactos: valla de Chesterton, 5 principios, equilibrio anti sobre-simplificación |
 | [`tasks-vscode-global`](skills/global/tasks-vscode-global/SKILL.md) | "tasks.json", "tarea de vscode", "levantar servicios", "npm run dev", "task ALL" | `.vscode/tasks.json` solo de servicios dev: una task por servicio (`powershell -NoExit`, `isBackground`, panel propio) + agregadores grupo/ALL en paralelo con `dependsOn` |
 | [`tdd-global`](skills/global/tdd-global/SKILL.md) | "TDD", "test primero", "red green", "reproducir el bug", "prove it", "test de regresion" | Ciclo RED-GREEN-REFACTOR, Prove-It para bugs, pirámide de tests; descubrir el stack antes del primer test |
@@ -226,7 +227,7 @@ cero dependencias) que codifica los 6 checks de
 
 ```bash
 npm test             # estructura + triggers + sincronización (README/AGENTS.md/CHANGELOG)
-npx skills add . -l  # el ecosistema sigue descubriendo las 37 skills
+npx skills add . -l  # el ecosistema sigue descubriendo las 38 skills
 ```
 
 | Archivo | Qué cubre |
