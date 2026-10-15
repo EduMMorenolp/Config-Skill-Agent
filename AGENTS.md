@@ -10,7 +10,9 @@
 3. **La Verificación es obligatoria.** El último paso del checklist de toda skill es
    `## Verificación (obligatoria)` con comandos exactos: corré esos comandos y reportá el
    resultado real. En cualquier implementación, además: lint + typecheck + tests del
-   proyecto, siempre en ese orden.
+   proyecto, siempre en ese orden. Cuando el cambio toque skills o agentes **de este repo**,
+   la suite propia es `npm test` en la raíz (estructura + triggers + sincronización):
+   correla y reportá el resultado real.
 4. **Si dos skills aplican**, mirá la sección `## Solapamiento` de ambas: la dueña ejecuta;
    la otra solo si su disparador es explícito en la tarea. No dupliques el flujo.
 5. **Si la tarea encadena varias skills** (arranque de proyecto, UI completa, ciclo de un
@@ -143,6 +145,7 @@ Cada eslabón asume los anteriores; seguir el orden.
 
 - No actuar solo con la description sin cargar la skill completa.
 - No saltarte la `Verificación (obligatoria)` ni el lint + typecheck + tests.
+- No des por terminada una skill o un agente de este repo sin `npm test` en verde.
 - No inventar el flujo cuando hay una skill que lo cubre.
 - No mezclar dominios: las skills `*-backend` no tocan UI; las `*-frontend` no tocan
   servidor; las de `qa-test/` se aplican en los momentos de control (runtime, API, review).

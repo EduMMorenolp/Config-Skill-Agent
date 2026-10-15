@@ -94,7 +94,7 @@ if (pm.response.code === 201) {
 // GET/PUT/DELETE: pm.test('200 OK', () => pm.response.code === 200);
 ```
 
-### 6. Validar y escribir (obligatoria)
+### 6. Verificación (obligatoria): validar y escribir
 
 - Escribir en `docs/postman/<Coleccion>.json` (2 espacios de indentación, descripciones y
   comentarios en español); si existe → reemplazar completo, nunca fusionar a mano.

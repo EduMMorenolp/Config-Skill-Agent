@@ -12,6 +12,9 @@ SKILL/
 ├── AGENTS.md      # contexto y convenciones para el agente que trabaja acá
 ├── README.md      # este archivo
 ├── CHANGELOG.md   # historial de cambios (se actualiza en cada alta/modificación/baja)
+├── package.json   # npm test = suite estructural de skills + agentes (cero dependencias)
+├── test/          # la suite (node:test): estructura, triggers y sincronización documental
+├── .github/       # CI: workflow `verify` corre npm test + npx skills add . -l en cada PR
 ├── skills/        # contenedor canónico de skills (lo descubre npx skills)
 │   ├── backend/   # skills de backend (9 activas)
 │   ├── frontend/  # skills de frontend (8 activas)
@@ -193,6 +196,26 @@ cada vendor lo recibe en su carpeta y agrega sus campos extra:
 
 Copiar el archivo al path del vendor y reiniciar el agente para que recargue la config.
 
+## Verificación (suite del repo)
+
+Toda alta o edición de skill/agente se valida con la suite estructural (Node 24, `node:test`,
+cero dependencias) que codifica los 6 checks de
+[`crear-skill-global`](skills/global/crear-skill-global/SKILL.md):
+
+```bash
+npm test             # estructura + triggers + sincronización (README/AGENTS.md/CHANGELOG)
+npx skills add . -l  # el ecosistema sigue descubriendo las 29 skills
+```
+
+| Archivo | Qué cubre |
+|---|---|
+| `test/skills-structure.test.mjs` | frontmatter, `name` = carpeta, ≤150 líneas, secciones fijas, cero refs externas, anti description-trap |
+| `test/skills-content.test.mjs` | `Solapamiento` resuelve a skills existentes y triggers sin colisión (pares backend/frontend permitidos en `test/helpers.mjs`) |
+| `test/sync.test.mjs` | cada skill publicada en README + AGENTS.md + CHANGELOG; agentes con `name` = archivo y skills hermanas existentes |
+
+En GitHub Actions (`.github/workflows/verify.yml`) corre en cada push y PR: sin `npm test`
+en verde, no se mergea. Cada fallo imprime la skill y la regla violada.
+
 ## Agregar una skill
 
 1. Crear `skills/<categoría>/<nombre-kebab-case>/SKILL.md` siguiendo
@@ -200,7 +223,8 @@ Copiar el archivo al path del vendor y reiniciar el agente para que recargue la 
    iteración → verificación).
 2. Seguir el formato y las convenciones de [`AGENTS.md`](AGENTS.md) (frontmatter, secciones,
    genérica, ≤ 150 líneas).
-3. Correr la verificación de `AGENTS.md` (sin referencias externas, `name` = carpeta, tamaño).
+3. Correr la suite desde la raíz: `npm test` (estructura, triggers y sincronización con el
+   catálogo/AGENTS.md/CHANGELOG) y `npx skills add . -l` (descubrimiento por el ecosistema).
 4. Agregar la fila al catálogo de este README (el catálogo vive solo acá).
 5. Registrar el cambio en [`CHANGELOG.md`](CHANGELOG.md) siguiendo su **Formato EXIGENTE**
    (`Added` / `Changed` / `Fixed` / `Removed` / `Maintenance`, en `## [Unreleased]`).
@@ -214,8 +238,9 @@ Copiar el archivo al path del vendor y reiniciar el agente para que recargue la 
    tabla de mapeo de este README, no en el archivo.
 3. Referenciar las skills hermanas **por nombre** (nunca copiar su contenido) y exigir
    lint + typecheck + tests en el prompt.
-4. Correr la verificación de `AGENTS.md` (sección 5-6) y agregar la fila al catálogo
-   `### agents/` de este README (el catálogo vive solo acá).
+4. Correr `npm test` (valida frontmatter, `name` = archivo, fila en el catálogo y skills
+   hermanas citadas) y agregar la fila al catálogo `### agents/` de este README (el
+   catálogo vive solo acá).
 5. Registrar el alta en [`CHANGELOG.md`](CHANGELOG.md) en el mismo gesto.
 
 > **Regla:** agregar, modificar o eliminar una skill o un agente → actualizar también el

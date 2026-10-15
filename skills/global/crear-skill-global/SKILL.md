@@ -73,22 +73,18 @@ Reglas de contenido:
 ### 5. Verificación (obligatoria)
 
 ```bash
-# 1) name = carpeta
-rg "^name:" skills/<categoria>/<carpeta>/SKILL.md        # debe imprimir la carpeta
-# 2) cero referencias externas (rutas ajenas al repo)
-rg -i "regla[s]/|patrone[s]/|br[ai]n/|proy[e]ctos/|portafoli[o]|openbr[ai]n|vizt[a]|vau[l]t" skills/<categoria>/<carpeta>
-# 3) tamaño (objetivo ≤150, absoluto 500)
-rg -c '^' skills/<categoria>/<carpeta>/SKILL.md
-# 4) secciones fijas presentes
-rg "^## " skills/<categoria>/<carpeta>/SKILL.md
-# 5) changelog registra el alta/modificación en el mismo gesto
-rg "<nombre-de-la-skill>" CHANGELOG.md
-# 6) el ecosistema descubre la skill (desde la raíz; debe aparecer en la lista)
+# desde la RAÍZ del repo — la suite cubre los 6 checks en TODAS las skills y agentes:
+# frontmatter parsea, name = carpeta, ≤150 líneas, secciones fijas, cero refs externas,
+# Solapamiento/README/AGENTS.md/CHANGELOG al día y triggers sin colisión
+npm test
+
+# el ecosistema descubre la skill (desde la raíz; debe aparecer en la lista)
 npx skills add . -l
 ```
 
-Falla cualquiera → corregir antes de dar por terminada (la suite se corre siempre al final,
-después de iterar con uso real).
+Los checks viven en `test/` (`skills-structure`, `skills-content`, `sync`); cada fallo
+imprime la skill y la regla violada. **La suite se corre siempre al final**, después de
+iterar con uso real: un `npm test` en rojo no se entrega.
 
 ## Anti-patrones (cómo detectarlos)
 

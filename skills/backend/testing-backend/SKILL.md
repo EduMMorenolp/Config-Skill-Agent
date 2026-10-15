@@ -1,6 +1,6 @@
 ---
 name: testing-backend
-description: 'Testing strategy for Express backends — unit, integration, and E2E tests with proper fixtures, mocking, and CI integration. Use when writing tests, setting up Jest/Vitest, mocking services, configuring test DB, or auditing test coverage. Triggers: "test", "jest", "vitest", "supertest", "mock", "cobertura", "coverage", "TDD", "fixture", "CI falla", "test de integración", "testear endpoint".'
+description: 'Testing strategy for Express backends — unit, integration, and E2E tests with proper fixtures, mocking, and CI integration. Use when writing tests, setting up Jest/Vitest, mocking services, configuring test DB, or auditing test coverage. Triggers: "test", "jest", "vitest", "supertest", "mock", "cobertura", "coverage", "fixture", "CI falla", "test de integración", "testear endpoint".'
 ---
 
 # Testing Backend — pirámide de tests con BD aislada y mocks explícitos

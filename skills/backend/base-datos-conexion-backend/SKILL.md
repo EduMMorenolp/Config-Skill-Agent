@@ -1,6 +1,6 @@
 ---
 name: base-datos-conexion-backend
-description: 'Database connection pool, repository pattern, migrations, and transactions for Node.js backends. Use when setting up the database for the first time, optimizing the pool, adding migrations, handling transactions, or debugging connection leaks. Triggers: "conexión a la base", "pool", "migraciones", "transacción", "sequelize", "drizzle", "knex", "prisma", "DATABASE_URL", "connection leak", "base de datos", "query", "repository".'
+description: 'Database connection pool, repository pattern, migrations, and transactions for Node.js backends. Use when setting up the database for the first time, optimizing the pool, adding migrations, handling transactions, or debugging connection leaks. Triggers: "conexión a la base", "pool", "migraciones", "transacción", "sequelize", "drizzle", "knex", "prisma", "connection leak", "base de datos", "query", "repository".'
 ---
 
 # Base de Datos Conexión — un pool, un patrón de acceso, migraciones versionadas

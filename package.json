@@ -1,0 +1,14 @@
+{
+  "name": "config-skill-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Repositorio de agent skills y agentes portables — suite de verificación estructural (cero dependencias).",
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "skills:discover": "npx --yes skills add . -l"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
