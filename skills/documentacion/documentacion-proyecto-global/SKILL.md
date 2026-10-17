@@ -11,7 +11,9 @@ organizado en **6 fases** (`00-inicio` … `06-cierre`) y generado por `bin/pmdo
 metadatos**, **tabla de control de versiones** y los **diagramas Mermaid** que le
 corresponden. El framework se **adapta** ("tailoring") al tamaño del equipo: con una persona
 se generan los documentos indispensables, no el tomo completo. Nunca se inventan fechas,
-montos, horas ni reglas de negocio.
+montos, horas ni reglas de negocio. Junto con los `.md` se genera un **visor HTML**
+(`index.html`) y un **servidor local** (`serve.mjs` + `docs.cmd`) para leer el set en el
+navegador, sin recursos externos.
 
 ## Cuándo usarla
 
@@ -40,15 +42,19 @@ montos, horas ni reglas de negocio.
 node bin/pmdocs.mjs finalize <proyecto.json> <ruta>/docs --json
 ```
 
-Escribe el árbol `<ruta>/docs/<fase>/<documento>.md` más `docs/README.md` (índice maestro) y
-devuelve `gates` y `outputs`. Con gates en rojo **no escribe nada**.
+Escribe el árbol `<ruta>/docs/<fase>/<documento>.md`, el índice `docs/README.md`, el visor
+`docs/index.html`, el servidor `docs/serve.mjs` y el launcher `docs/docs.cmd`, y devuelve
+`gates` y `outputs`. Con gates en rojo **no escribe nada**.
 
-5. **Reparar si falla**: leer `gates[].errors`, corregir SOLO el candidato (nunca el Markdown
-   generado ni las plantillas) y re-correr el mismo `finalize`.
-6. **Delegar el contenido**: este set es dueño del **mapa y de la gestión**; el contenido
+5. **Ver en el navegador**: `node bin/pmdocs.mjs serve <ruta>/docs` levanta el servidor y abre
+   el visor (o doble clic en `docs/docs.cmd`; `index.html` también se abre solo).
+6. **Reparar si falla**: leer `gates[].errors`, corregir SOLO el candidato (nunca el Markdown
+   generado, el visor ni las plantillas) y re-correr el mismo `finalize`.
+7. **Delegar el contenido**: este set es dueño del **mapa y de la gestión**; el contenido
    técnico fino lo definen las skills del dominio (contrato de API, arquitectura, datos,
    testing) y las horas quedan para la skill de estimaciones.
-7. **Entrega**: informar la ruta absoluta de `docs/README.md` y el resumen de gates.
+8. **Entrega**: informar la ruta absoluta de `docs/README.md` y de `docs/index.html`, y el
+   resumen de gates.
 
 ## Fases y documentos
 
@@ -72,6 +78,8 @@ devuelve `gates` y `outputs`. Con gates en rojo **no escribe nada**.
 - **Tabla `## Control de versiones`** (versión, fecha, autor, cambios).
 - **Mermaid** donde aporta: Gantt (cronograma), `erDiagram` (datos), `flowchart` (arquitectura
   y UX) y `mindmap` (EDT).
+- **Visor** `index.html`: autocontenido (sin CDN, sin CSS/JS externos) con sidebar por fase,
+  búsqueda, tema claro/oscuro e impresión; delega los diagramas a Mermaid del editor.
 
 ## Anti-patrones (cómo detectarlos)
 
@@ -86,6 +94,8 @@ devuelve `gates` y `outputs`. Con gates en rojo **no escribe nada**.
 | Enlaces externos o tokens sin reemplazar | gates `no-external-links` y `no-template-tokens` |
 | Editar el Markdown generado a mano | el rerun de `finalize` lo pisa → corregir el candidato |
 | Índice desincronizado del set | gate `index-complete` |
+| Visor que carga CSS/JS de un CDN | gate `viewer-self-contained` |
+| Faltan el visor, el servidor o el `.cmd` | gate `serve-included` |
 
 ## Solapamiento
 
@@ -106,10 +116,12 @@ devuelve `gates` y `outputs`. Con gates en rojo **no escribe nada**.
 npm test
 # el ecosistema sigue descubriendo la skill (desde la raíz)
 npx skills add . -l
-# desde la carpeta de la skill: doctor + finalize real sobre el ejemplo (10 gates ok)
+# desde la carpeta de la skill: doctor + finalize real sobre el ejemplo (12 gates ok)
 node bin/pmdocs.mjs doctor
 node bin/pmdocs.mjs finalize examples/gestor-pedidos.proyecto.json /tmp/docs --json
 node --test test/pmdocs.test.mjs
+# el set sale con visor y servidor listos para ver
+ls examples/docs/index.html examples/docs/serve.mjs examples/docs/docs.cmd
 # name = carpeta, tamaño y secciones fijas
 rg "^name: documentacion-proyecto-global" SKILL.md
 rg -c '^' SKILL.md

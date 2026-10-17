@@ -55,7 +55,7 @@ test("finalize writes the full set and passes every gate on the example", () => 
     const { status, payload } = run(["finalize", EXAMPLE, dir, "--json"]);
     assert.equal(status, 0, JSON.stringify(payload?.gates, null, 2));
     assert.equal(payload.summary.failed, 0);
-    assert.equal(payload.summary.total, 10);
+    assert.equal(payload.summary.total, 12);
     for (const name of [
       "validate",
       "placeholders",
@@ -66,13 +66,18 @@ test("finalize writes the full set and passes every gate on the example", () => 
       "mermaid-required",
       "kebab-case",
       "no-external-links",
+      "viewer-self-contained",
+      "serve-included",
       "index-complete",
     ])
       assert.ok(gateNamed(payload, name), `falta el gate ${name}`);
     assert.ok(existsSync(join(dir, "README.md")));
+    assert.ok(existsSync(join(dir, "index.html")));
+    assert.ok(existsSync(join(dir, "serve.mjs")));
+    assert.ok(existsSync(join(dir, "docs.cmd")));
     assert.ok(existsSync(join(dir, "00-inicio", "acta-constitucion.md")));
     assert.ok(existsSync(join(dir, "03-tecnico", "adr", "0001-stack-de-una-sola-aplicacion-web.md")));
-    assert.ok(payload.outputs.length >= 30);
+    assert.ok(payload.outputs.length >= 33);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -220,6 +225,51 @@ test("failed gates write no output files", () => {
     run(["finalize", input, dir, "--json"]);
     assert.ok(!existsSync(join(dir, "README.md")), "el indice se escribio pese a fallar los gates");
     assert.ok(!existsSync(join(dir, "00-inicio")), "se escribieron carpetas pese a fallar los gates");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("el visor embebe todos los documentos y es autocontenido", () => {
+  const dir = tmp();
+  try {
+    const { payload } = run(["finalize", EXAMPLE, dir, "--json"]);
+    const html = readFileSync(join(dir, "index.html"), "utf8");
+    const mdCount = payload.outputs.filter((file) => file.endsWith(".md")).length;
+    const sections = (html.match(/<section class="doc"/g) || []).length;
+    const links = (html.match(/<a href="#doc-/g) || []).length;
+    assert.equal(sections, mdCount, "el visor debe embeber todos los documentos");
+    assert.equal(links, mdCount, "el sidebar debe enlazar cada documento");
+    assert.ok(!/https?:\/\//.test(html), "el visor no debe tener referencias externas");
+    assert.ok(!/<link[^>]+stylesheet/i.test(html), "el visor no debe cargar CSS externo");
+    assert.ok(!/<script[^>]+src=/i.test(html), "el visor no debe cargar JS externo");
+    assert.ok(html.includes("<nav"));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("genera el servidor local y el launcher que lo invoca", () => {
+  const dir = tmp();
+  try {
+    run(["finalize", EXAMPLE, dir, "--json"]);
+    const server = readFileSync(join(dir, "serve.mjs"), "utf8");
+    const launcher = readFileSync(join(dir, "docs.cmd"), "utf8");
+    assert.ok(server.includes("createServer"), "serve.mjs debe traer el servidor");
+    assert.ok(launcher.includes("@echo off"), "docs.cmd debe ser un .cmd de Windows");
+    assert.ok(launcher.includes("serve.mjs"), "docs.cmd debe invocar serve.mjs");
+    assert.ok(launcher.includes("\r\n"), "el .cmd debe usar fin de linea de Windows");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("serve rechaza una carpeta sin visor generado", () => {
+  const dir = tmp();
+  try {
+    const { status, payload } = run(["serve", dir]);
+    assert.equal(status, 1);
+    assert.match(payload.error, /index\.html/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

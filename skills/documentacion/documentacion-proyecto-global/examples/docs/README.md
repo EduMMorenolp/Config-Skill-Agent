@@ -14,6 +14,9 @@ Este indice es la fuente unica de navegacion del set de documentos. Cada enlace
 apunta al documento de su fase; los documentos marcados como opcionales se crean
 solo cuando el proyecto los necesita.
 
+Para ver el set completo en el navegador: abri `index.html`, o ejecuta
+`node serve.mjs` (en Windows, doble clic en `docs.cmd`).
+
 ## Indice por fase
 
 ### 00-inicio — Inicio

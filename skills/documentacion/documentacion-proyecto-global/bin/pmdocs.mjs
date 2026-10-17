@@ -2,6 +2,7 @@
 // pmdocs — genera el set de documentacion de proyecto (PMBOK adaptado) desde un JSON tipado.
 // Cero dependencias: valida el schema, renderiza plantillas Markdown y aplica gates.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -11,6 +12,13 @@ const SCHEMA_PATH = join(SKILL_ROOT, "schemas", "proyecto.schema.json");
 const TEMPLATES_DIR = join(SKILL_ROOT, "templates");
 const METADATA_TEMPLATE = "_metadata.md";
 const ADR_TEMPLATE = "03-tecnico/adr.md";
+const VIEWER_TEMPLATE = "_viewer.html";
+const SERVER_TEMPLATE = "viewer/serve.mjs";
+
+// Archivos de soporte que acompanan al set Markdown para poder VER la documentacion.
+const VIEWER_FILE = "index.html";
+const SERVER_FILE = "serve.mjs";
+const LAUNCHER_FILE = "docs.cmd";
 
 const PLACEHOLDERS = /(___+|TODO|FIXME|TBD|\bXXX\b)/;
 
@@ -268,6 +276,141 @@ function render(text, ctx) {
   return withBuilders.replace(/\{\{([\w.]+)\}\}/g, (_, path) => cell(getPath(ctx, path)));
 }
 
+// ---------- visor HTML (Markdown -> HTML, autocontenido) ----------
+function mdEscape(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+function mdInline(text) {
+  return mdEscape(text)
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+    .replace(/(^|[\s(])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+}
+function mdTable(rows) {
+  const cells = rows.map((row) =>
+    row
+      .replace(/^\|/, "")
+      .replace(/\|$/, "")
+      .split("|")
+      .map((c) => c.trim())
+  );
+  const head = cells[0] || [];
+  const body = cells.slice(2);
+  const thead = `<thead><tr>${head.map((c) => `<th>${mdInline(c)}</th>`).join("")}</tr></thead>`;
+  const tbody = `<tbody>${body
+    .map((row) => `<tr>${row.map((c) => `<td>${mdInline(c)}</td>`).join("")}</tr>`)
+    .join("")}</tbody>`;
+  return `<table>${thead}${tbody}</table>`;
+}
+function mdToHtml(markdown) {
+  const lines = String(markdown ?? "")
+    .replace(/\r\n/g, "\n")
+    .split("\n");
+  const out = [];
+  let listType = null;
+  const closeList = () => {
+    if (listType) {
+      out.push(listType === "ul" ? "</ul>" : "</ol>");
+      listType = null;
+    }
+  };
+  const isBlockStart = (line) =>
+    /^(#{1,6}\s|>|\||-\s|\d+\.\s|```)/.test(line);
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (/^```/.test(line)) {
+      closeList();
+      const lang = line.slice(3).trim();
+      const buffer = [];
+      i += 1;
+      while (i < lines.length && !/^```/.test(lines[i])) {
+        buffer.push(lines[i]);
+        i += 1;
+      }
+      i += 1;
+      const cls = lang === "mermaid" ? "mermaid" : "code";
+      const caption =
+        lang === "mermaid"
+          ? '<div class="caption">Diagrama Mermaid (se renderiza en GitHub o en el editor con soporte de Mermaid)</div>'
+          : "";
+      out.push(`<pre class="${cls}"><code>${mdEscape(buffer.join("\n"))}</code></pre>${caption}`);
+      continue;
+    }
+    if (/^\|/.test(line)) {
+      closeList();
+      const rows = [];
+      while (i < lines.length && /^\|/.test(lines[i])) {
+        rows.push(lines[i]);
+        i += 1;
+      }
+      out.push(mdTable(rows));
+      continue;
+    }
+    const heading = line.match(/^(#{1,6})\s+(.*)$/);
+    if (heading) {
+      closeList();
+      const level = heading[1].length;
+      out.push(`<h${level}>${mdInline(heading[2])}</h${level}>`);
+      i += 1;
+      continue;
+    }
+    if (/^>\s?/.test(line)) {
+      closeList();
+      const buffer = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) {
+        buffer.push(lines[i].replace(/^>\s?/, ""));
+        i += 1;
+      }
+      out.push(`<div class="metabox">${mdInline(buffer.join(" "))}</div>`);
+      continue;
+    }
+    if (/^-\s+/.test(line)) {
+      if (listType !== "ul") {
+        closeList();
+        out.push("<ul>");
+        listType = "ul";
+      }
+      out.push(`<li>${mdInline(line.replace(/^-\s+/, ""))}</li>`);
+      i += 1;
+      continue;
+    }
+    if (/^\d+\.\s+/.test(line)) {
+      if (listType !== "ol") {
+        closeList();
+        out.push("<ol>");
+        listType = "ol";
+      }
+      out.push(`<li>${mdInline(line.replace(/^\d+\.\s+/, ""))}</li>`);
+      i += 1;
+      continue;
+    }
+    if (/^\s*$/.test(line)) {
+      closeList();
+      i += 1;
+      continue;
+    }
+    closeList();
+    const paragraph = [line];
+    i += 1;
+    while (i < lines.length && !/^\s*$/.test(lines[i]) && !isBlockStart(lines[i])) {
+      paragraph.push(lines[i]);
+      i += 1;
+    }
+    out.push(`<p>${mdInline(paragraph.join(" "))}</p>`);
+  }
+  closeList();
+  return out.join("\n");
+}
+function anchorOf(rel) {
+  return `doc-${rel.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase()}`;
+}
+
 function loadSchema() {
   if (!existsSync(SCHEMA_PATH)) fail(`schema no encontrado: ${SCHEMA_PATH}`);
   try {
@@ -373,19 +516,75 @@ function buildFiles(candidate) {
       candidate.tecnico.adrs.forEach((adr) => {
         const rel = `${d.phase}/${d.dir}/${adr.id}-${slugify(adr.title)}.md`;
         const doc = { title: `ADR ${adr.id}: ${adr.title}`, phaseName: PHASE_NAMES[d.phase], file: rel };
-        files.push({ rel, content: renderDoc(candidate, doc, ADR_TEMPLATE, adr), doc: { ...d, mermaid: false } });
+        files.push({
+          rel,
+          content: renderDoc(candidate, doc, ADR_TEMPLATE, adr),
+          doc: { ...d, mermaid: false },
+          kind: "doc",
+        });
       });
       included.push(d);
       continue;
     }
     const rel = `${d.phase}/${d.file}`;
     const doc = { title: d.title, phaseName: PHASE_NAMES[d.phase], file: rel };
-    files.push({ rel, content: renderDoc(candidate, doc, rel), doc: d });
+    files.push({ rel, content: renderDoc(candidate, doc, rel), doc: d, kind: "doc" });
     included.push(d);
   }
   const readme = buildReadme(candidate, included);
-  files.unshift({ rel: "README.md", content: readme.content, doc: { title: "Indice maestro" }, readme: true, links: readme.links });
+  files.unshift({
+    rel: "README.md",
+    content: readme.content,
+    doc: { title: "Indice maestro" },
+    readme: true,
+    links: readme.links,
+    kind: "readme",
+  });
+  // Visor, servidor y launcher: parte del entregable para VER la documentacion.
+  files.push({ rel: VIEWER_FILE, content: buildViewer(candidate, files), kind: "viewer", doc: { title: "Visor de documentacion" } });
+  files.push({ rel: SERVER_FILE, content: loadTemplate(SERVER_TEMPLATE), kind: "server", doc: { title: "Servidor local" } });
+  files.push({ rel: LAUNCHER_FILE, content: buildLauncher(), kind: "launcher", doc: { title: "Launcher" } });
   return { files, included };
+}
+function buildViewer(candidate, files) {
+  const docs = files.filter((f) => f.kind === "doc" || f.kind === "readme");
+  const sections = [];
+  const nav = [];
+  for (const f of docs) {
+    const id = anchorOf(f.rel);
+    const isIndex = f.kind === "readme";
+    const title = isIndex ? "Indice maestro" : f.doc.title;
+    const phase = isIndex ? "Transversal" : PHASE_NAMES[f.rel.split("/")[0]] || "Documentos";
+    sections.push(`<section class="doc" id="${id}">${mdToHtml(f.content)}</section>`);
+    nav.push({ id, title, phase });
+  }
+  const sidebar = [];
+  let currentPhase = null;
+  for (const item of nav) {
+    if (item.phase !== currentPhase) {
+      currentPhase = item.phase;
+      sidebar.push(`<div class="phase">${mdEscape(item.phase)}</div>`);
+    }
+    sidebar.push(`<a href="#${item.id}">${mdEscape(item.title)}</a>`);
+  }
+  const title = `${candidate.meta.projectName} — Documentacion`;
+  const generated = `Generado por documentacion-proyecto-global · version ${mdEscape(candidate.meta.version)} · ${mdEscape(candidate.meta.date)}`;
+  return loadTemplate(VIEWER_TEMPLATE)
+    .replaceAll("__TITLE__", mdEscape(title))
+    .replace("__SIDEBAR__", sidebar.join("\n"))
+    .replace("__CONTENT__", sections.join("\n"))
+    .replace("__GENERATED__", generated);
+}
+function buildLauncher() {
+  return [
+    "@echo off",
+    "setlocal",
+    'cd /d "%~dp0"',
+    "where node >nul 2>nul || (echo Node.js no esta instalado. Instalalo y volve a intentar. & pause & exit /b 1)",
+    "echo Sirviendo la documentacion en el navegador... (cerra esta ventana para detener el servidor)",
+    'node "serve.mjs" %*',
+    "endlocal",
+  ].join("\r\n");
 }
 function buildReadme(candidate, included) {
   const links = [];
@@ -397,6 +596,9 @@ function buildReadme(candidate, included) {
   lines.push("Este indice es la fuente unica de navegacion del set de documentos. Cada enlace");
   lines.push("apunta al documento de su fase; los documentos marcados como opcionales se crean");
   lines.push("solo cuando el proyecto los necesita.");
+  lines.push("");
+  lines.push("Para ver el set completo en el navegador: abri `index.html`, o ejecuta");
+  lines.push("`node serve.mjs` (en Windows, doble clic en `docs.cmd`).");
   lines.push("");
   lines.push("## Indice por fase");
   lines.push("");
@@ -468,6 +670,12 @@ function contentGates(candidate) {
 }
 function deliverGates(files, included) {
   const gates = [];
+  const mdFiles = files.filter((f) => f.kind === "doc" || f.kind === "readme");
+  const docFiles = files.filter((f) => f.kind === "doc");
+  const viewer = files.find((f) => f.kind === "viewer");
+  const server = files.find((f) => f.kind === "server");
+  const launcher = files.find((f) => f.kind === "launcher");
+
   gates.push(
     gate(
       "no-template-tokens",
@@ -479,7 +687,7 @@ function deliverGates(files, included) {
   gates.push(
     gate(
       "metadata-block",
-      files
+      mdFiles
         .filter((f) => !f.content.includes("**Estado:**") || !f.content.includes("## Control de versiones"))
         .map((f) => `${f.rel}: falta el bloque de metadatos o la tabla de Control de versiones`)
     )
@@ -487,7 +695,7 @@ function deliverGates(files, included) {
   gates.push(
     gate(
       "mermaid-required",
-      files
+      docFiles
         .filter((f) => f.doc.mermaid && !f.content.includes("```mermaid"))
         .map((f) => `${f.rel}: debe incluir un diagrama Mermaid`)
     )
@@ -495,7 +703,7 @@ function deliverGates(files, included) {
   gates.push(
     gate(
       "kebab-case",
-      files
+      mdFiles
         .filter((f) => !kebabOk(f.rel))
         .map((f) => `${f.rel}: nombre o carpeta fuera de kebab-case minuscula con extension .md`)
     )
@@ -503,11 +711,27 @@ function deliverGates(files, included) {
   gates.push(
     gate(
       "no-external-links",
-      files
+      [...mdFiles, ...(viewer ? [viewer] : [])]
         .filter((f) => /https?:\/\//.test(f.content))
         .map((f) => `${f.rel}: enlace externo (el set debe ser autocontenido)`)
     )
   );
+
+  const viewerErrors = [];
+  if (!viewer || !viewer.content.trim()) viewerErrors.push(`falta ${VIEWER_FILE}`);
+  else {
+    if (/https?:\/\//.test(viewer.content)) viewerErrors.push(`${VIEWER_FILE}: referencia externa`);
+    if (/<link[^>]+stylesheet/i.test(viewer.content)) viewerErrors.push(`${VIEWER_FILE}: hoja de estilo externa`);
+    if (/<script[^>]+src=/i.test(viewer.content)) viewerErrors.push(`${VIEWER_FILE}: script externo`);
+  }
+  gates.push(gate("viewer-self-contained", viewerErrors));
+
+  const serveErrors = [];
+  if (!server || !server.content.trim()) serveErrors.push(`falta ${SERVER_FILE}`);
+  if (!launcher || !launcher.content.trim()) serveErrors.push(`falta ${LAUNCHER_FILE}`);
+  else if (!launcher.content.includes(SERVER_FILE)) serveErrors.push(`${LAUNCHER_FILE} no invoca ${SERVER_FILE}`);
+  gates.push(gate("serve-included", serveErrors));
+
   const readme = files.find((f) => f.readme);
   const indexErrors = [];
   for (const d of included) {
@@ -533,7 +757,9 @@ function writeFiles(files, docsRoot) {
   for (const file of files) {
     const full = join(docsRoot, file.rel);
     mkdirSync(dirname(full), { recursive: true });
-    writeFileSync(full, `${file.content.replace(/\s+$/, "")}\n`, "utf8");
+    const body = file.content.replace(/\s+$/, "");
+    const eol = file.rel.endsWith(".cmd") ? "\r\n" : "\n";
+    writeFileSync(full, `${body}${eol}`, "utf8");
   }
 }
 
@@ -544,7 +770,8 @@ function cmdDoctor() {
     const rel = d.multi ? ADR_TEMPLATE : `${d.phase}/${d.file}`;
     if (!existsSync(join(TEMPLATES_DIR, rel))) problems.push(`falta la plantilla ${rel} (${d.key})`);
   }
-  if (!existsSync(join(TEMPLATES_DIR, METADATA_TEMPLATE))) problems.push(`falta ${METADATA_TEMPLATE}`);
+  for (const rel of [METADATA_TEMPLATE, VIEWER_TEMPLATE, SERVER_TEMPLATE])
+    if (!existsSync(join(TEMPLATES_DIR, rel))) problems.push(`falta la plantilla ${rel}`);
   try {
     loadSchema();
   } catch (err) {
@@ -560,6 +787,7 @@ function cmdDoctor() {
         templates: CATALOG.length,
         documents: CATALOG.length,
         phases: PHASES.length,
+        viewer: { html: VIEWER_FILE, server: SERVER_FILE, launcher: LAUNCHER_FILE },
       },
       null,
       2
@@ -595,7 +823,9 @@ function cmdGuide(args) {
           "¿Que decisiones tecnicas y de negocio ya estan tomadas (stack, datos, precios)?",
           "¿Cuales son los 3 comercios/pilotos o el criterio de cierre del MVP?",
         ],
-        outputConvention: "<docsRoot>/<fase>/<documento>.md + <docsRoot>/README.md (indice)",
+        outputConvention:
+          "<docsRoot>/<fase>/<documento>.md + <docsRoot>/README.md (indice) + <docsRoot>/index.html (visor) + <docsRoot>/serve.mjs y docs.cmd (servidor local)",
+        viewer: { html: VIEWER_FILE, server: SERVER_FILE, launcher: LAUNCHER_FILE },
       },
       null,
       2
@@ -647,12 +877,34 @@ function cmdFinalize(args) {
   if (!allPass) process.exit(1);
 }
 
+function cmdServe(args) {
+  const portIndex = args.indexOf("--port");
+  const forwarded = [];
+  for (let i = 0; i < args.length; i += 1) {
+    if (i === portIndex) {
+      forwarded.push(args[i], args[i + 1]);
+      i += 1;
+      continue;
+    }
+    if (args[i].startsWith("--")) forwarded.push(args[i]);
+  }
+  const positional = args.filter((a, i) => !a.startsWith("--") && !(portIndex >= 0 && i === portIndex + 1));
+  const root = resolve(positional[0] || ".");
+  if (!existsSync(root)) fail(`no existe la carpeta a servir: ${root}`);
+  if (!existsSync(join(root, VIEWER_FILE)))
+    fail(`no encontre ${VIEWER_FILE} en ${root}: corre "finalize" primero para generar el visor`);
+  const server = join(TEMPLATES_DIR, SERVER_TEMPLATE);
+  const result = spawnSync(process.execPath, [server, root, ...forwarded], { stdio: "inherit" });
+  process.exit(result.status ?? 0);
+}
+
 // ---------- dispatcher ----------
 const [, , command, ...rest] = process.argv;
 if (command === "doctor") cmdDoctor();
 else if (command === "guide") cmdGuide(rest);
 else if (command === "finalize") cmdFinalize(rest);
+else if (command === "serve") cmdServe(rest);
 else
   fail(
-    `comando desconocido "${command ?? ""}". Use: doctor | guide "<escenario>" | finalize <candidate.json> <docsRoot>`
+    `comando desconocido "${command ?? ""}". Use: doctor | guide "<escenario>" | finalize <candidate.json> <docsRoot> | serve <docsRoot> [--port 4180] [--no-open]`
   );
