@@ -110,6 +110,12 @@ conviven en la misma app).
 |---|---|
 | "documento de presentación", "presentar feature/implementación", "documento para el rol X", "briefing de feature", "uno con detalle técnico y otro sin jerga", "documento con fecha YYYYMMDD" | `documentacion` |
 
+### Al arrancar o documentar un proyecto
+
+| Situación (disparador) | Skill a cargar |
+|---|---|
+| "documentación del proyecto", "acta de constitución", "alcance del proyecto", "objetivos SMART", "ERS", "EDT", "WBS", "cronograma de hitos", "matriz RACI", "plan de riesgos", "set de documentos", "PMBOK" | `documentacion-proyecto-global` |
+
 ### Al cerrar el cambio
 
 | Situación (disparador) | Skill a cargar |
@@ -177,6 +183,9 @@ Cada eslabón asume los anteriores; seguir el orden.
 - **UI de punta a punta:** la arquitectura del stack → `data-fetching` → `formularios` →
   `estados-toast` → `ui-bloques` → `accesibilidad` (con el prefijo `vite-` o `next-` del
   stack del proyecto) → `playwright-cli` (verificar) → `changelog-global`.
+- **Arranque de un proyecto:** `documentacion-proyecto-global` (set de documentos y alcance)
+  → `generador-estimaciones-global` (horas por rol) → implementación (skills del stack, con
+  `contrato-api-global` al diseñar endpoints) → `documentacion` (presentar cada feature).
 - **Un bug:** `tdd-global` (reproducir en test) → corregir → `revision-codigo-global` →
   `changelog-global`.
 

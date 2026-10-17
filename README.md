@@ -20,7 +20,7 @@ SKILL/
 │   ├── frontend-vite/ # skills de frontend Vite/SPA (8 activas)
 │   ├── frontend-next/ # skills de frontend Next.js App Router (8 activas)
 │   ├── qa-test/   # skills de QA/testing (3 activas)
-│   ├── documentacion/ # skills de documentación ejecutiva (1 activa)
+│   ├── documentacion/ # skills de documentación ejecutiva (2 activas)
 │   ├── devops/    # reservada
 │   └── global/    # skills globales front+back (9 activas)
 └── agents/        # agentes portables: backend-node, database-drizzle, frontend-vite, frontend-next
@@ -107,7 +107,8 @@ Documentos ejecutivos: se aplican cuando hay que presentar o documentar una feat
 
 | Skill | Dispara con | Qué resuelve |
 |---|---|---|
-| [`documentacion`](skills/documentacion/SKILL.md) | "documento de presentación", "presentar feature", "presentar implementación", "documento para el rol administrativo", "briefing de feature", "uno técnico y otro sin jerga" | DOS HTML ejecutivos autocontenidos desde un mismo JSON tipado validado por CLI propia (`bin/presentador.mjs`): técnico (`YYYYMMDD-<slug>.html` con portada, contexto, alcance, flujo, historias, plan con horas e impacto técnico) + simple (`YYYYMMDD-<slug>-simple.html` en lenguaje llano con pasos, horas por equipo y nota aclaratoria), tema claro/oscuro, imprimibles a A4 |
+| [`documentacion`](skills/documentacion/documentacion/SKILL.md) | "documento de presentación", "presentar feature", "presentar implementación", "documento para el rol administrativo", "briefing de feature", "uno técnico y otro sin jerga" | DOS HTML ejecutivos autocontenidos desde un mismo JSON tipado validado por CLI propia (`bin/presentador.mjs`): técnico (`YYYYMMDD-<slug>.html` con portada, contexto, alcance, flujo, historias, plan con horas e impacto técnico) + simple (`YYYYMMDD-<slug>-simple.html` en lenguaje llano con pasos, horas por equipo y nota aclaratoria), tema claro/oscuro, imprimibles a A4 |
+| [`documentacion-proyecto-global`](skills/documentacion/documentacion-proyecto-global/SKILL.md) | "documentación del proyecto", "acta de constitución", "alcance del proyecto", "objetivos SMART", "ERS", "requisitos del sistema", "EDT", "WBS", "cronograma de hitos", "gantt", "matriz RACI", "mapa de stakeholders", "plan de riesgos", "control de cambios", "plan de comunicaciones", "visión de producto", "lean canvas", "unit economics", "go to market", "plan de sprints", "set de documentos", "PMBOK" | Set de documentos Markdown del proyecto en 6 fases (`00-inicio` … `06-cierre`) generado por CLI propia (`bin/pmdocs.mjs`) desde un JSON tipado validado por schema: acta de constitución, stakeholders, objetivos SMART, visión de producto, alcance del MVP, ERS, EDT/WBS, cronograma de hitos en Gantt, RACI, riesgos, control de cambios, comunicaciones, arquitectura, modelo de datos, contratos de API, seguridad y privacidad, UX, ADR, pricing y unit economics, go-to-market, plan de sprints, calidad y runbook, y plantillas de cierre; cada documento con bloque de metadatos, control de versiones y Mermaid, tailoring `solo`/`equipo`, índice maestro y 10 gates |
 
 ### agents/
 
@@ -148,6 +149,10 @@ dataflow o estados a partir del código o de una descripción (skill externa, MI
 implementación de un servicio a un rol: genera el par de HTML ejecutivos (técnico + simple en
 lenguaje llano, ambos con prefijo `YYYYMMDD-`) con el alcance acordado;
 ese alcance es lo que después se estima (`generador-estimaciones-global`) y se implementa.
+`documentacion-proyecto-global` - cuando haya que **documentar el proyecto entero**:
+genera el set de documentos Markdown en 6 fases (acta, stakeholders, SMART, visión, alcance
+MVP, ERS, EDT/WBS, Gantt, RACI, riesgos, arquitectura, datos, API, seguridad, negocio, sprints,
+calidad, cierre) con metadatos, control de versiones, Mermaid y tailoring por tamaño de equipo.
 
 **QA (`qa-test/`):** se aplican en los momentos de control, no en el arranque —
 `playwright-cli` para verificar en navegador (runtime), `postman-builder` para colecciones
@@ -227,7 +232,7 @@ cero dependencias) que codifica los 6 checks de
 
 ```bash
 npm test             # estructura + triggers + sincronización (README/AGENTS.md/CHANGELOG)
-npx skills add . -l  # el ecosistema sigue descubriendo las 38 skills
+npx skills add . -l  # el ecosistema sigue descubriendo las 39 skills
 ```
 
 | Archivo | Qué cubre |
